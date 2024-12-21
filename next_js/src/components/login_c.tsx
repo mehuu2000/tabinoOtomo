@@ -33,6 +33,13 @@ export default function Login_c() {
               sx={{
                 width: "100%",
                 margin: "5px",
+                "& .MuiOutlinedInput-root": { // outlined variant のスタイルを変更
+                  borderRadius: "10px",
+                  textAlign: "center",
+                },
+                "& .MuiOutlinedInput-input": { // input部分のスタイル
+                  textAlign: "center", // テキストの中央寄せ
+                }
               }}
             />
             <TextField 
@@ -45,6 +52,13 @@ export default function Login_c() {
               sx={{
                 width: "100%",
                 margin: "5px",
+                "& .MuiOutlinedInput-root": { // outlined variant のスタイルを変更
+                  borderRadius: "10px",
+                  // textAlign: "center",
+                },
+                "& .MuiOutlinedInput-input": { // input部分のスタイル
+                  textAlign: "center", // テキストの中央寄せ
+                }
               }}
             />
           </div>

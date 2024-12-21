@@ -1,7 +1,7 @@
 .header {
     height: 60px;
     width: 100%;
-    border-radius: 0 0 20px 20px;
+    /* border-radius: 0 0 20px 20px; */
     font-size: 3rem;
     color: white;
     background: linear-gradient(to right, #8944FF, #3C49FF);

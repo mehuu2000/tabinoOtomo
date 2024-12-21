@@ -40,7 +40,7 @@ next.jsの起動は
 ```npm run dev```
 
 flaskの起動は
-```flask --app main run```
+```python3 main.py```
 
 prismaの起動は
 ```npx prisma studio```

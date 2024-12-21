@@ -5,13 +5,15 @@ import MapIcon from '@mui/icons-material/Map';
 import StickyNote2Icon from '@mui/icons-material/StickyNote2';
 import ContactPhoneOutlinedIcon from '@mui/icons-material/ContactPhoneOutlined';
 import SettingsSuggestRoundedIcon from '@mui/icons-material/SettingsSuggestRounded';
+import { useApp } from '../app/TabinoOtomo/home/appContext';
 
-interface SideBarProps {
-    select: string;
-    setSelect: React.Dispatch<React.SetStateAction<string>>;
-}
+// interface SideBarProps {
+//     select: string;
+//     setSelect: React.Dispatch<React.SetStateAction<string>>;
+// }
 
-export default function SideBar_c({ select, setSelect }: SideBarProps) {
+export default function SideBar_c() {
+    const { select, setSelect }= useApp();
     const handleSelectChange = (newSelect: string) => {
         setSelect(newSelect);
     };

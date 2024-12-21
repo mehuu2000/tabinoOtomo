@@ -1,0 +1,42 @@
+.main {
+    height: calc(100vh - 90px);
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border-right: 1px solid black;
+}
+
+.list {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0px;
+    overflow-y: auto; 
+}
+
+.memo {
+    min-height: 3rem;
+    max-height: 300px;
+    overflow: hidden;
+    border-radius: 20px;
+    border: 1px solid black;
+    text-align: left;
+    overflow-wrap: break-word;
+    margin: 10px;
+}
+
+.contents {
+    margin: 5px;
+}
+
+.h3 {
+    font-size: 18px;
+    margin: 0 0 5px 5px;
+}
+
+.button {
+    background-color: rgb(103, 133, 103);
+}

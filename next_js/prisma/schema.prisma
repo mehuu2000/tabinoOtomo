@@ -9,48 +9,48 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
-model ApiCount {
-  id Int @default(autoincrement()) @id
-  weather Int @default(0)
-  googleMap Int @default(0)
-  twitter Int @default(0)
-  gemini Int @default(0)
+  provider  = "postgresql"
+  url       = env("SUPABASE_URL")
+  // directUrl = env("DIRECT_URL")
 }
 
 model User {
-  id Int @default(autoincrement()) @id
-  userName String
-  password String?
-  main String?
-  telenum String?
-  state String
-  iCon String?
-  introdaction String
+  id String @default(cuid()) @id
+  name String @unique
+  email String @unique
+  state String @default("user")
+  image String?
   createAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model Plan {
-  id Int @default(autoincrement()) @id
-  userId Int
-  title String
-  days Int
-  fromWhen Int
-  toTrabelId Int[]
-  createAt DateTime @default(now())
-}
+// model ApiCount {
+//   id Int @default(autoincrement()) @id
+//   weather Int @default(0)
+//   googleMap Int @default(0)
+//   twitter Int @default(0)
+//   gemini Int @default(0)
+// }
 
-model ToTrabel {
-  id Int @default(autoincrement()) @id
-  userId Int
-  planId Int
-  day Int
-  placeName String
-  content String
-  imageUrl String
-  memo String?
-  address String
-}
+
+// model Plan {
+//   id Int @default(autoincrement()) @id
+//   userId Int
+//   title String
+//   days Int
+//   fromWhen Int
+//   toTrabelId Int[]
+//   createAt DateTime @default(now())
+// }
+
+// model ToTrabel {
+//   id Int @default(autoincrement()) @id
+//   userId Int
+//   planId Int
+//   day Int
+//   placeName String
+//   content String
+//   imageUrl String
+//   memo String?
+//   address String
+// }

@@ -17,8 +17,8 @@
 }
 
 .content {
-    min-height: 85%;
-    width: 45%;
+    min-height: 500px;
+    width:600px;
     background-color: white;
     border-radius: 40px;
     box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
@@ -40,8 +40,8 @@
 }
 
 .mailPassword_Login {
-    height: 40%;
-    width: 80%;
+    height: 30%;
+    width: 70%;
     display: flex;
     justify-content: center;
     align-items: center;

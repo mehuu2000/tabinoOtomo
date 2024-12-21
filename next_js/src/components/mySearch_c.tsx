@@ -1,4 +1,4 @@
-import { InputAdornment, TextField } from '@mui/material';
+import { InputAdornment, TextField, FormControlLabel, Checkbox } from '@mui/material';
 import styles from './module_css/mySearch_c.module.css';
 
 interface MySearchProps {
@@ -11,10 +11,13 @@ interface MySearchProps {
     days: string;
     setDays: React.Dispatch<React.SetStateAction<string>>;
 
+    weather: boolean;
+    setWeather: React.Dispatch<React.SetStateAction<boolean>>;
+
     displayMySearch: () => void; 
 }
 
-export default function MySearch_c({ goTo, setGoTo, when, setWhen, days, setDays, displayMySearch }: MySearchProps) {
+export default function MySearch_c({ goTo, setGoTo, when, setWhen, days, setDays, weather, setWeather, displayMySearch }: MySearchProps) {
 
     const handleGoToChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setGoTo(event.target.value); 
@@ -27,6 +30,10 @@ export default function MySearch_c({ goTo, setGoTo, when, setWhen, days, setDays
     const handleDaysChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setDays(event.target.value);
     }
+
+    const handleWeatherChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setWeather(event.target.checked);
+    };
 
     return(
         <div className={styles.main}>
@@ -41,8 +48,11 @@ export default function MySearch_c({ goTo, setGoTo, when, setWhen, days, setDays
                             variant="standard" 
                             onChange={handleGoToChange}
                             slotProps={{
-                                input: {
-                                    endAdornment: <InputAdornment position="end">都/道/府/県</InputAdornment>,
+                                // input: {
+                                //     endAdornment: <InputAdornment position="end">都/道/府/県<br/>市/町/村</InputAdornment>,
+                                // },
+                                htmlInput: {
+                                    autoComplete: 'off', // オートコンプリートを無効化
                                 },
                             }}
                             sx={{
@@ -62,8 +72,11 @@ export default function MySearch_c({ goTo, setGoTo, when, setWhen, days, setDays
                             variant="standard" 
                             onChange={handleWhenChange}
                             slotProps={{
-                                input: {
-                                    endAdornment: <InputAdornment position="end">年/月/日</InputAdornment>,
+                                // input: {
+                                //     endAdornment: <InputAdornment position="end">年/月/日</InputAdornment>,
+                                // },
+                                htmlInput: {
+                                    autoComplete: 'off', // オートコンプリートを無効化
                                 },
                             }}
                             sx={{
@@ -85,6 +98,9 @@ export default function MySearch_c({ goTo, setGoTo, when, setWhen, days, setDays
                                 input: {
                                     endAdornment: <InputAdornment position="end">日間</InputAdornment>,
                                 },
+                                htmlInput: {
+                                    autoComplete: 'off', // オートコンプリートを無効化
+                                },
                             }}
                             sx={{
                                 width: '200px',
@@ -94,6 +110,11 @@ export default function MySearch_c({ goTo, setGoTo, when, setWhen, days, setDays
                             }}
                         />
                     </div>
+
+                    <FormControlLabel 
+                        control={<Checkbox onChange={handleWeatherChange} />} 
+                        label="行き先の天気予報を調べる" 
+                    />
 
                     <button 
                         className={styles.button} 
