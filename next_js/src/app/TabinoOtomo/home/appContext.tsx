@@ -59,15 +59,30 @@ export function AppProvider({ children }: AppProviderProps) {
   const SelectFounction = (func: string) => {
     switch (func) {
       case "favorite":
-          console.log("お気に入りボタンが押されました。");
-          RemoveElements();
+        console.log("お気に入りボタンが押されました。");
+        RemoveElements();
+      case "fin":
+        console.log("終了ボタンが押されました");
+        FinelEments();
+      case "delete":
+        console.log("削除ボタンが押されました");
+        DeleteElements();
+      case "chat":
+        console.log("チャットボタンが押されました");
+        ChatElements();
         break;
     }
   }
     
   const RemoveElements = () => {
   }
-
+  const FinelEments = () => {
+  }
+  const DeleteElements = () => {
+  }
+  const ChatElements = () => {
+  }
+  
   const value = {
     select,
     setSelect,

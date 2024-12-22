@@ -38,19 +38,19 @@ export default function OtherFunc_u() {
             </div>
             <div className={styles.funclist}>
                 <p className={styles.p}>アイテム完了</p>
-                <button className={styles.button} id='fin'>
+                <button className={styles.button} onClick={() => SelectFounction('fin')} disabled={!choose}>
                     <TaskAltIcon />
                 </button>
             </div>
             <div className={styles.funclist}>
                 <p className={styles.p}>アイテムを削除</p>
-                <button className={styles.button} id='delete'>
+                <button className={styles.button} onClick={() => SelectFounction('delete')} disabled={!choose}>
                     <DeleteForeverIcon />
                 </button>
             </div>
             <div className={styles.funclist}>
                 <p className={styles.p}>AIとチャット</p>
-                <button className={styles.button} id='chat'>
+                <button className={styles.button} onClick={() => SelectFounction('chat')} disabled={!choose}>
                     <TryIcon />
                 </button>
             </div>
