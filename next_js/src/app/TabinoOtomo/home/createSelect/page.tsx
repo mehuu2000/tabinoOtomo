@@ -9,9 +9,7 @@ export default function CreateSelect() {
     return (
         <>
           <div className={styles.main}>
-              <Header_c />
               <CreateSelect_c />
-              <Footer_c />
           </div>
         </>
       );

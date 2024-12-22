@@ -1,4 +1,5 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
+import NextAuth from "next-auth";
+import { NextAuthOptions } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 
 import CredentialsProvider from 'next-auth/providers/credentials';
@@ -14,13 +15,14 @@ import { prisma } from "@/lib/prisma";
 // import { cache } from "react";
 
 export const authOptions: NextAuthOptions = {
+// export const authOptions = {
     //prismaを使うための設定
   adapter: PrismaAdapter(prisma),
   providers: [
     //google認証
     GoogleProvider({
-      clientId: process.env.GOOGLE_ID as string,
-      clientSecret: process.env.GOOGLE_SECRET as string,
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
 
     //メールとパスワードで認証
@@ -61,7 +63,7 @@ export const authOptions: NextAuthOptions = {
     })
   ],
   session: {
-      strategy: "jwt",
+      strategy: "jwt" as const,
   },
   secret: process.env.NEXTAUTH_SECRET,
 }

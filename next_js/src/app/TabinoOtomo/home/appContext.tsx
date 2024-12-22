@@ -61,12 +61,15 @@ export function AppProvider({ children }: AppProviderProps) {
       case "favorite":
         console.log("お気に入りボタンが押されました。");
         RemoveElements();
+        break;
       case "fin":
         console.log("終了ボタンが押されました");
         FinelEments();
+        break;
       case "delete":
         console.log("削除ボタンが押されました");
         DeleteElements();
+        break;
       case "chat":
         console.log("チャットボタンが押されました");
         ChatElements();

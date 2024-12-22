@@ -54,7 +54,6 @@ export default function MySearch() {
 
   return (
     <div className={styles.main}>
-        <Header_c />
         <MySearch_c 
           goTo={goTo} setGoTo={setGoTo} 
           when={when} setWhen={setWhen} 
@@ -62,7 +61,6 @@ export default function MySearch() {
           weather={weather} setWeather={setWeather}
           displayMySearch={displayMySearch}
         />
-        <Footer_c />
     </div>
   )
 }

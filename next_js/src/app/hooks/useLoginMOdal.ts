@@ -5,7 +5,7 @@ import { ModalType } from '@/app/types'
 
 // ログイン状態管理
 //zustandはグローバルで使えるuseStateみたいなもの
-const useLoginModal = create<ModalType>((set: any) => ({
+const useLoginModal = create<ModalType>((set) => ({
   isOpen: false,
   onOpen: () => set({ isOpen: true }),
   onClose: () => set({ isOpen: false }),

@@ -1,0 +1,74 @@
+.main {
+    position: fixed; /* ビューポートに固定 */
+    top: 50%;        /* 画面の縦方向中央 */
+    left: 50%;       /* 画面の横方向中央 */
+    transform: translate(-50%, -50%); /* 要素の中心を基準に調整 */
+    width: 800px;    /* 横幅 */
+    height: 500px;   /* 高さ */
+    background-color: white; /* 背景色 */
+    border: none;      /* 境界線（任意） */
+    border-radius: 50px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* 影（任意） */
+    z-index: 1000;   /* 他の要素より前面に表示 */
+    overflow: hidden;  /* コンテンツがはみ出した場合に隠す */
+    padding: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    /* visibility: hidden; */
+}
+
+.profile {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+}
+
+.image {
+    height: 100%;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.img {
+    min-width: 250px;
+    min-height: 250px;
+    overflow: hidden;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    border: 1px solid rgb(177, 177, 177);
+}
+
+.name_intro {
+    width: 50%;
+    height: 250px;
+}
+
+.name_intro h2 {
+    margin: 8px 0;  /* 上下のマージンを調整 */
+    font-size: 24px;
+}
+
+.name_intro p {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 8px 0;  /* 上下のマージンを調整 */
+    line-height: 1.5;  /* 行間を調整（読みやすさ向上） */
+    font-size: 16px;  /* フォントサイズ（必要に応じて調整） */
+    white-space: pre-wrap; /* 長いテキストが折り返されるようにする */
+    word-wrap: break-word; /* 単語の途中で改行しない */
+}
+
+.operation {
+    width: 75%;
+    display: flex;
+    justify-content: space-around;
+}

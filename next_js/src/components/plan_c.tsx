@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import styles_c from './module_css/select.module.css'
 
 export default function Plan_c() {
     return(

@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react'
 import { signOut } from 'next-auth/react'
 import { User } from '@prisma/client'
 
-import useLoginModal from '../../app/hooks/useLoginMOdal'
+import useLoginModal from '../../app/hooks/useLoginModal'
 import useSignupModal from '../../app/hooks/useSignupModal'
 import useProfileModal from '../../app/hooks/useProfileModal'
 import MenuItem from './MenuItem'
@@ -36,6 +36,7 @@ const Menu: React.FC<MenuProps> = ({ currentUser }) => {
           className="rounded-full object-cover"
           alt="avatar"
           fill
+          sizes="(max-width: 600px) 25vw, (max-width: 1200px) 10vw, 5vw" 
         />
       </div>
 
