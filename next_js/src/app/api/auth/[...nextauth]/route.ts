@@ -1,25 +1,14 @@
 import NextAuth from "next-auth";
 import { NextAuthOptions } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from "next-auth/providers/google";
 import bcrypt from 'bcryptjs'
 import { prisma } from "@/lib/prisma";
 
-
-// import { getServerSession as originalGetServerSession } from "next-auth";
-
-
-
-// import { cache } from "react";
-
 export const authOptions: NextAuthOptions = {
-// export const authOptions = {
-    //prismaを使うための設定
   adapter: PrismaAdapter(prisma),
   providers: [
-    //google認証
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
@@ -27,45 +16,54 @@ export const authOptions: NextAuthOptions = {
 
     //メールとパスワードで認証
     CredentialsProvider({
-        name: 'credentials',
-        credentials: {
-            // メールアドレスとパスワード
-            email: { label: 'mail', type: 'text' },
-            password: { label: 'password', type: 'password' },
+      name: 'credentials',
+      credentials: {
+        email: { label: 'mail', type: 'text' },
+        password: { label: 'password', type: 'password' },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error('メールアドレスとパスワードが存在しません')
+        }
+          // ユーザーを取得
+          const user = await prisma.user.findUnique({
+            where: {
+              email: credentials.email,
+            },
+          })
+  
+          // ユーザーが存在しない場合はエラー
+          if (!user || !user?.hashedPassword) {
+            throw new Error('ユーザーが存在しません')
+          }
+  
+          // パスワードが一致しない場合はエラー
+          const isCorrectPassword = await bcrypt.compare(credentials.password, user.hashedPassword)
+  
+          if (!isCorrectPassword) {
+            throw new Error('パスワードが一致しません')
+          }
+          
+          return user
         },
-        async authorize(credentials) {
-            // メールアドレスとパスワードがない場合はエラー
-            if (!credentials?.email || !credentials?.password) {
-              throw new Error('メールアドレスとパスワードが存在しません')
-            }
-    
-            // ユーザーを取得
-            const user = await prisma.user.findUnique({
-              where: {
-                email: credentials.email,
-              },
-            })
-    
-            // ユーザーが存在しない場合はエラー
-            if (!user || !user?.hashedPassword) {
-              throw new Error('ユーザーが存在しません')
-            }
-    
-            // パスワードが一致しない場合はエラー
-            const isCorrectPassword = await bcrypt.compare(credentials.password, user.hashedPassword)
-    
-            if (!isCorrectPassword) {
-              throw new Error('パスワードが一致しません')
-            }
-    
-            return user
-        },
-    })
+      })
   ],
   session: {
-      strategy: "jwt" as const,
+    strategy: "database",
+    maxAge: 3 * 24 * 60 * 60, // 3日間
   },
+  callbacks: {
+    async session({ session, user }) {
+      if (session?.user) {
+        session.user.id = user.id;
+      }
+      return session;
+    }
+  },
+
   secret: process.env.NEXTAUTH_SECRET,
+  
+  debug: process.env.NODE_ENV === 'development',
 }
 
 const handler = NextAuth(authOptions)

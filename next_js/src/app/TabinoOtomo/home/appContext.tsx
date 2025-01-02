@@ -6,6 +6,7 @@ import Memo_c from '../../../components/memo_c';
 import Inquiry_c from '../../../components/inquiry_c';
 import Setting_c from '../../../components/setting_c';
 import NotFound_c from '../../../components/notFound_c';
+import Memo from './memo/page';
 
 // コンテキストの型定義
 interface AppContextType {
@@ -38,7 +39,7 @@ export function AppProvider({ children }: AppProviderProps) {
       case "search":
         return <Search_c />;
       case "memo":
-        return <Memo_c />;
+        return <Memo />;
       case "inquiry":
         return <Inquiry_c />;
       case "setting":

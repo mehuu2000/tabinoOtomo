@@ -11,12 +11,11 @@
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* 影（任意） */
     z-index: 1000;   /* 他の要素より前面に表示 */
     overflow: hidden;  /* コンテンツがはみ出した場合に隠す */
-    padding: 50px;
+    padding: 70px 50px 50px 50px;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    /* visibility: hidden; */
 }
 
 .profile {
@@ -24,7 +23,7 @@
     width: 100%;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: start;
     flex-direction: row;
 }
 
@@ -32,7 +31,7 @@
     height: 100%;
     width: 50%;
     display: flex;
-    justify-content: center;
+    justify-content: start;
     align-items: center;
     flex-direction: column;
 }
@@ -47,24 +46,34 @@
 }
 
 .name_intro {
+    display: flex;
+    justify-content: start;
+    align-items: start;
+    flex-direction: column;
     width: 50%;
     height: 250px;
 }
 
-.name_intro h2 {
-    margin: 8px 0;  /* 上下のマージンを調整 */
-    font-size: 24px;
+.name_intro .name {
+    width: 100%;
+    padding: 8px;
+    margin: 4px 0;  /* 上下のマージンを調整 */
+    font-size: 28px;
+    border-radius: 10px;
 }
 
-.name_intro p {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin: 8px 0;  /* 上下のマージンを調整 */
+.name_intro .intro {
+    width: 100%;
+    height: 100%;
+    padding: 8px;
+    margin: 4px 0;  /* 上下のマージンを調整 */
     line-height: 1.5;  /* 行間を調整（読みやすさ向上） */
     font-size: 16px;  /* フォントサイズ（必要に応じて調整） */
-    white-space: pre-wrap; /* 長いテキストが折り返されるようにする */
-    word-wrap: break-word; /* 単語の途中で改行しない */
+    word-wrap: break-word;  /* 長い単語が途中で折り返されるように設定 */
+    white-space: pre-wrap;  /* 改行や空白をそのまま表示（テキストが折り返し可能に） */
+    border-radius: 10px;  /* 角を丸くする */
+    resize: none;
+    overflow-y: auto;
 }
 
 .operation {

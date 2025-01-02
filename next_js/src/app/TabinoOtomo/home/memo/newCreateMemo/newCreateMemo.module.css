@@ -1,0 +1,98 @@
+.main {
+    height: 100vh;
+    width: 100vw;
+    padding: 60px 0 30px 0;
+
+    display: flex;
+}
+
+.side {
+    height: 100%;
+    width: 100%;
+    flex: 2;
+    background-color: white;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+}
+
+.insert {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: row;
+    font-size: 20px; /* テキストの大きさを20pxに設定 */
+    cursor: pointer;
+}
+.insertP {
+    margin-top: 50px;
+}
+.insertImg {
+    margin-top: 10px;
+}
+.fin {
+    margin-top: 50px;
+}
+
+.icon {
+    display: flex;
+    align-items: center;  /* アイコンを中央揃え */
+    margin-right: 10px;  /* アイコンとテキストの間にスペースを追加 */
+}
+.icon .MuiSvgIcon-root {
+    font-size: 24px;  /* アイコンのサイズ調整 */
+}
+
+.memo {
+    height: 100%;
+    width: 100%;
+    flex: 5;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    border-radius: 30px;
+    margin: 20px;
+}
+
+.memo .textarea {
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid black;
+    outline: none; 
+    text-align: left;
+    margin-bottom: 20px;
+    word-wrap: break-word;  /* 長い単語が途中で折り返されるように設定 */
+    white-space: pre-wrap;  /* 改行や空白をそのまま表示（テキストが折り返し可能に） */
+    font-size: 20px;
+    resize: none; /* サイズ変更の非表示（オプション） */
+    height: 30px;
+    overflow: hidden;
+}
+.memo .textarea:focus {
+    border-color: rgb(137, 68, 255);
+}
+.memo div.insertText {
+    display: flex;
+    width: 100%;
+}
+.memo div.insertText li {
+    margin-top: 3px;
+}
+
+.memo .img {
+    align-self: center; /* 画像を横方向の中央に配置 */
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* 画像がコンテナ内で収まるように */
+    margin-bottom: 5px;
+}
+
+.map {
+    height: 100%;
+    width: 100%;
+    flex: 3;
+    background-color: white;
+}

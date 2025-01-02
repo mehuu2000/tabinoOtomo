@@ -8,11 +8,24 @@
 
 const nextConfig = {
   experimental: {
-    serverActions: true,
+    serverActions: {},
   },
   images: {
     domains: ['lh3.googleusercontent.com', 'res.cloudinary.com'],
   },
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'Large-Allocation',
+            value: 'true'
+          }
+        ],
+      },
+    ]
+  }
 }
 
 module.exports = nextConfig

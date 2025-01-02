@@ -1,12 +1,13 @@
 'use client'
 
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { signOut } from 'next-auth/react'
 import { User } from '@prisma/client'
 
 import useLoginModal from '../../app/hooks/useLoginModal'
 import useSignupModal from '../../app/hooks/useSignupModal'
 import useProfileModal from '../../app/hooks/useProfileModal'
+import getCurrentUser from '@/app/actions/getCurentUser'
 import MenuItem from './MenuItem'
 import Image from 'next/image'
 
