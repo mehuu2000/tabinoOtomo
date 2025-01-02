@@ -63,7 +63,7 @@
     border-bottom: 1px solid black;
     outline: none; 
     text-align: left;
-    margin-bottom: 20px;
+    margin: 10px 10px 10px 0;
     word-wrap: break-word;  /* 長い単語が途中で折り返されるように設定 */
     white-space: pre-wrap;  /* 改行や空白をそのまま表示（テキストが折り返し可能に） */
     font-size: 20px;
@@ -79,7 +79,7 @@
     width: 100%;
 }
 .memo div.insertText li {
-    margin-top: 3px;
+    margin-top: 12px;
 }
 
 .memo .img {

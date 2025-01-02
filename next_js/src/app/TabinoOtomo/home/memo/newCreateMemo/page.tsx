@@ -12,18 +12,32 @@ import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined'; //イメー�
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined'; //完了
 
 function CreateMemo() {
+    const [number, setNumber] = useState(1);
+
+    const [memoForm, setMemoForm] = useState<{
+        type: string;
+        content: string;
+        order: number;
+    }[]>([]);
+
+    //テキスト追加処理
     const handleInsertText = () => {
         console.log("テキスト追加ボタンが押されました。");
-        const order = memoForm.length + 1;
+        const order = number;
+        setNumber(number + 1);
         setMemoForm([...memoForm, { type: "text", content: "", order }]);
         console.log(memoForm);
     }
+
+    //画像追加処理
     const handleInsertImage = () => {
         console.log("画像追加ボタンが押されました。");
-        const order = memoForm.length + 1;
+        const order = number;
+        setNumber(number + 1);
         setMemoForm([...memoForm, { type: "img", content: "", order }]);
         console.log(memoForm);
     }
+
     const handleFinish = () => {
         console.log("完了ボタンが押されました。");
     }
@@ -37,11 +51,10 @@ function CreateMemo() {
         );
     };
 
-    const [memoForm, setMemoForm] = useState<{
-        type: string;
-        content: string;
-        order: number;
-    }[]>([]);
+    //削除ボタンを押すと、引数のorderに合うものをmemoFormから削除する
+    const handleDelete = (order: number) => {
+        setMemoForm(prevMemoForm => prevMemoForm.filter(item => item.order !== order));
+    };
 
     return (
         <div className={styles.main}>
@@ -167,6 +180,7 @@ function CreateMemo() {
                                 order={item.order}
                                 content={item.content}
                                 onInputChange={handleInputChange}
+                                onDelete={handleDelete}
                             />
                         );
                     }
