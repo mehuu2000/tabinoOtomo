@@ -47,52 +47,84 @@
 .memo {
     height: 100%;
     width: 100%;
-    flex: 5;
+    flex: 6;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    border-radius: 30px;
-    margin: 20px;
+    margin: 0 10px 20px 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .memo .textarea {
-    width: 100%;
+    width: 90%;
     background-color: transparent;
     border: none;
     border-bottom: 1px solid black;
     outline: none; 
     text-align: left;
-    margin: 10px 10px 10px 0;
+    margin: 10px 30px 10px 20px;
     word-wrap: break-word;  /* 長い単語が途中で折り返されるように設定 */
     white-space: pre-wrap;  /* 改行や空白をそのまま表示（テキストが折り返し可能に） */
     font-size: 20px;
     resize: none; /* サイズ変更の非表示（オプション） */
     height: 30px;
     overflow: hidden;
+    color: #443322;
 }
 .memo .textarea:focus {
     border-color: rgb(137, 68, 255);
 }
 .memo div.insertText {
     display: flex;
+    align-items: center;
     width: 100%;
+    background-color: white;
+    border-radius: 30px;
+    margin: 5px 0 5px 0;
 }
 .memo div.insertText li {
+    width: 5%;
     margin-top: 12px;
+    margin-left: 2%;
+}
+.memo div.insertText button {
+    width: 5%;
+    margin-right: 4px;
 }
 
+.memo .insertImg {
+    width: 100%;
+    margin: 10px 10px 10px 0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: row;
+    background-color: white;
+    border-radius: 30px;
+}
 .memo .img {
+    width: 90%;
     align-self: center; /* 画像を横方向の中央に配置 */
-    max-width: 100%;
+    max-width: calc(100% - 100px);
     max-height: 100%;
     object-fit: contain; /* 画像がコンテナ内で収まるように */
     margin-bottom: 5px;
+    margin: 10px 20px 10px 20px;
+}
+.memo div.insertImg button {
+    width: 5%;
 }
 
 .map {
     height: 100%;
     width: 100%;
-    flex: 3;
+    flex: 2;
     background-color: white;
+}
+
+.delButton {
+    height: 90%;
+    border-left: solid 1px black;
 }

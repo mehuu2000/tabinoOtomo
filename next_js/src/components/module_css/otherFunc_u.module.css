@@ -87,6 +87,13 @@
     cursor: pointer;
     background-color: rgba(137, 68, 255, 0.2);
 }
-.button:hover {
+
+.background-use {
+    background-color: rgba(137, 68, 255, 0.2);
+}
+.background-unuse {
+    background-color: rgba(111, 111, 111, 0.2);
+}
+.background-use:hover {
     background-color: rgba(137, 68, 255, 0.3);
 }

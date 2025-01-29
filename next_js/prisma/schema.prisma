@@ -55,6 +55,28 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
+model Memo {
+  id        String     @id @default(uuid())
+  title     String?
+  items     MemoItem[] // MemoItemとのリレーション
+  userId    String
+  favorite  Boolean    @default(false)
+  visited   Boolean    @default(false)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model MemoItem {
+  id      Int      @id @default(autoincrement())
+  type    String   // "text" または "img"
+  content String   // テキストまたは画像URL
+  order   Int      // 表示順
+  memoId  String      // 親メモへの参照
+  memo    Memo     @relation(fields: [memoId], references: [id])
+}
+
+
+
 // model ApiCount {
 //   id Int @default(autoincrement()) @id
 //   weather Int @default(0)

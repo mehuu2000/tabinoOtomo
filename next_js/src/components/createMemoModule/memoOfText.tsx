@@ -39,7 +39,7 @@ function MemoOfText({ order, content, onInputChange, onDelete }: MemoOfTextProps
                 onInput={handleResize}
                 className={styles.textarea}
             />
-            <button onClick={handleDeleteClick}>
+            <button className={styles.delButton} onClick={handleDeleteClick}>
                 <DeleteOutlineOutlinedIcon />
             </button>
         </div>

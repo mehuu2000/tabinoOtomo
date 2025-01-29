@@ -4,8 +4,8 @@ import React, { useEffect } from 'react'
 import styles from '../module_css/otherFunc_u.module.css';
 import SearchIcon from '@mui/icons-material/Search';
 import TouchAppIcon from '@mui/icons-material/TouchApp';
-import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import StarIcon from '@mui/icons-material/Star';
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import Button from '@mui/material/Button';
 import TryIcon from '@mui/icons-material/Try';
@@ -13,16 +13,31 @@ import { useApp } from '../../app/TabinoOtomo/home/appContext';
 import AddIcon from '@mui/icons-material/Add';
 import { useRouter } from 'next/navigation';
 
-export default function OtherFunc_u() {
-    const { choose, selectChoose, SelectFounction } = useApp();
+type MemoSelectedProps = {
+    selectedItems: string[];
+    setSelectedItems: React.Dispatch<React.SetStateAction<string[]>>;
+};
+
+export default function OtherFunc_u({ selectedItems, setSelectedItems }: MemoSelectedProps) {
+    const { choose, selectChoose, SelectFounction  } = useApp();
     const router = useRouter();
 
     const handleClick = () => {
         router.push('/TabinoOtomo/home/memo/newCreateMemo');
-      };
+    };
+
+    const handleFounction = (func: string, memos: string[]) => {
+        if(selectedItems.length != 0) {
+            SelectFounction(func, memos)
+        } else {
+            console.log("一つ以上選択してください")
+        }
+    }
 
     useEffect(() => {
-        console.log("chooseの値が更新されました:", choose);
+        if (!choose) {
+            setSelectedItems([]);
+        }
     }, [choose]);
 
   return (
@@ -57,31 +72,50 @@ export default function OtherFunc_u() {
         <div className={styles.func}>
             <div className={styles.funclist}>
                 <p className={styles.p}>アイテムを選択</p>
-                <button className={styles.button} onClick={() => selectChoose()}>
+                <button 
+                    className={`${styles.button} ${styles['background-use']}`}
+                    onClick={() => selectChoose()}
+                >
                     <TouchAppIcon />
                 </button>
             </div>
             <div className={styles.funclist}>
                 <p className={styles.p}>お気に入り</p>
-                <button className={styles.button} onClick={() => SelectFounction('favorite')} disabled={!choose}>
+                <button 
+                    className={`${styles.button} ${choose ? styles['background-use'] : styles['background-unuse']}`} 
+                    onClick={() => handleFounction('favorite', selectedItems)}
+                    disabled={!choose}
+                >
                     <StarIcon />
                 </button>
             </div>
             <div className={styles.funclist}>
                 <p className={styles.p}>アイテム完了</p>
-                <button className={styles.button} onClick={() => SelectFounction('fin')} disabled={!choose}>
+                <button 
+                    className={`${styles.button} ${choose ? styles['background-use'] : styles['background-unuse']}`} 
+                    onClick={() => handleFounction('fin', selectedItems)} 
+                    disabled={!choose}
+                >
                     <TaskAltIcon />
                 </button>
             </div>
             <div className={styles.funclist}>
                 <p className={styles.p}>アイテムを削除</p>
-                <button className={styles.button} onClick={() => SelectFounction('delete')} disabled={!choose}>
+                <button 
+                    className={`${styles.button} ${choose ? styles['background-use'] : styles['background-unuse']}`} 
+                    onClick={() => handleFounction('delete', selectedItems)} 
+                    disabled={!choose}
+                >
                     <DeleteForeverIcon />
                 </button>
             </div>
             <div className={styles.funclist}>
                 <p className={styles.p}>AIとチャット</p>
-                <button className={styles.button} onClick={() => SelectFounction('chat')} disabled={!choose}>
+                <button
+                    className={`${styles.button} ${choose ? styles['background-use'] : styles['background-unuse']}`} 
+                    onClick={() => handleFounction('chat', selectedItems)} 
+                    disabled={!choose}
+                >
                     <TryIcon />
                 </button>
             </div>

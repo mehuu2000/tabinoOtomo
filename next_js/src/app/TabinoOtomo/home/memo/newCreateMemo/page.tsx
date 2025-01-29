@@ -2,23 +2,40 @@
 
 import React, { useState } from 'react'
 import styles from './newCreateMemo.module.css';
+import { useSession } from 'next-auth/react';
 
 import MemoOfText from '@/components/createMemoModule/memoOfText';
+import MemoOfImage from '@/components/createMemoModule/memoOfImage';
 
 import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 import AddIcon from '@mui/icons-material/Add'; //プラス
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined'; //テキスト
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined'; //イメージ
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined'; //完了
 
+import { useRouter } from 'next/navigation';
+
 function CreateMemo() {
+    const router = useRouter();
+
     const [number, setNumber] = useState(1);
 
+    const [memoTitle, setMemoTitle] = useState("");
+
     const [memoForm, setMemoForm] = useState<{
-        type: string;
+        type: "text" | "img";
         content: string;
         order: number;
     }[]>([]);
+
+    const { data: session, status } = useSession();
+
+    //タイトルの変更を反映
+    const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setMemoTitle(event.target.value);
+        console.log(memoTitle);
+    }
 
     //テキスト追加処理
     const handleInsertText = () => {
@@ -32,18 +49,43 @@ function CreateMemo() {
     //画像追加処理
     const handleInsertImage = () => {
         console.log("画像追加ボタンが押されました。");
-        const order = number;
-        setNumber(number + 1);
-        setMemoForm([...memoForm, { type: "img", content: "", order }]);
-        console.log(memoForm);
-    }
+    
+        // ファイル選択用のinputを作成
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*'; // 画像のみ許可
+    
+        input.onchange = (event) => {
+            const file = (event.target as HTMLInputElement).files?.[0];
+            if (file) {
+                const reader = new FileReader();
 
-    const handleFinish = () => {
-        console.log("完了ボタンが押されました。");
-    }
+                reader.onloadend = () => {
+                    // Base64形式の画像データを取得
+                    const base64Image = reader.result as string;
+                    const order = number;
+                    setNumber(number + 1);
+
+                    // memoFormにBase64画像データを追加
+                    setMemoForm([
+                        ...memoForm,
+                        { type: "img", content: base64Image, order },
+                    ]);
+
+                    console.log(memoForm);
+                };
+
+                // Base64エンコードを開始
+                reader.readAsDataURL(file);
+            }
+        };
+    
+        // ファイル選択ダイアログを表示
+        input.click();
+    };
 
     //テキストの内容が変更された場合、引数のorderに合うもののmemoFormのcontetの値を引数のnewContentで更新
-    const handleInputChange = (order: number, newContent: string) => {
+    const handleMemoChange = (order: number, newContent: string) => {
         setMemoForm(prevMemoForm => 
             prevMemoForm.map(item =>
                 item.order === order ? { ...item, content: newContent } : item
@@ -56,6 +98,55 @@ function CreateMemo() {
         setMemoForm(prevMemoForm => prevMemoForm.filter(item => item.order !== order));
     };
 
+    //メモ作成
+    const handleMemoCreate = async () => {
+        console.log("メモ作成ボタンが押されました。");
+        console.log(`識別ユーザIDは${session?.user.id}です`);
+        console.log(memoForm);
+        console.log(memoTitle);
+
+        if(session?.user.id) {
+            try {
+                const filteredMemoForm = memoForm.filter(item => item.content.trim() !== '');
+
+                if (filteredMemoForm.length != 0) {
+                    const response = await fetch('/api/createMemo', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ 
+                            memoTitle: memoTitle,
+                            memoForm: filteredMemoForm,
+                            userId: session?.user.id,
+                        }),
+                    });
+            
+                    const data = await response.json();
+            
+                    if (data.success) {
+                        console.log("メモが正常に保存されました:", data.memo);
+                        alert("メモが正常に保存されました！");
+                        setNumber(1);
+                        setMemoTitle("");
+                        setMemoForm([]);
+                        router.back();
+                    } else {
+                        console.error("エラー:", data.message);
+                        alert("メモの保存中にエラーが発生しました。");
+                    }
+                } else {
+                    alert("メモの内容がありません!");
+                }
+            } catch (error) {
+                console.error("エラー:", error);
+                alert("メモの保存中にエラーが発生しました。");
+            }
+        } else {
+            console.log("ログインしてください");
+        }
+    }
+
     return (
         <div className={styles.main}>
             <div className={styles.side}>
@@ -65,7 +156,7 @@ function CreateMemo() {
                     className={`${styles.insertP} ${styles.insert}`}
                     sx={{
                         height: "50px",
-                        width: "150px",
+                        width: "180px",
                         padding: "0",
                         borderRadius: "10px",
                         borderColor: "rgb(137, 68, 255)",
@@ -93,7 +184,7 @@ function CreateMemo() {
                             }}
                         />
                     </div>
-                    <span>テキスト</span>
+                    <span>テキスト挿入</span>
                 </Button>
 
                 {/* 画像追加ボタン */}
@@ -102,7 +193,7 @@ function CreateMemo() {
                     className={`${styles.insertImg} ${styles.insert}`}
                     sx={{
                         height: "50px",
-                        width: "150px",
+                        width: "180px",
                         padding: "0",
                         borderRadius: "10px",
                         borderColor: "rgb(137, 68, 255)",
@@ -130,14 +221,14 @@ function CreateMemo() {
                             }}
                         />
                     </div>
-                    <span>画像</span>
+                    <span>画像挿入</span>
                 </Button>
                 <Button 
                     variant="outlined"
                     className={`${styles.fin} ${styles.insert}`}
                     sx={{
                         height: "50px",
-                        width: "150px",
+                        width: "180px",
                         padding: "0",
                         borderRadius: "10px",
                         borderColor: "rgb(137, 68, 255)",
@@ -147,7 +238,7 @@ function CreateMemo() {
                             borderColor: 'rgba(137, 68, 255, 0.5)',
                         }
                     }}
-                    onClick={handleFinish}
+                    onClick={handleMemoCreate}
                 >
                     <div className={styles.icon}>
                         <AddIcon 
@@ -171,23 +262,54 @@ function CreateMemo() {
             </div>
 
             <div className={styles.memo}>
-            {/* memoFormの内容を開いて、MemoOfTextコンポーネントに情報を渡して表示 */}
-            {memoForm.map((item, index) => {
+                <TextField
+                    id="standard-basic"
+                    label=""
+                    variant="standard"
+                    value={memoTitle} 
+                    onChange={(handleTitleChange)}
+                    className={styles.titleInput}
+                    slotProps={{
+                        input: { 
+                            style: { 
+                                fontSize: '24px',
+                                color: 'rgb(137, 68, 255)',
+                            }
+                        }, 
+                        inputLabel: { style: { fontSize: '12px' } }, // ラベルのフォントサイズ
+                        
+                    }}
+                    sx={{
+                        fontSize: '24px',
+                        width: '80%',
+                        padding: '5px',
+                        marginTop: '10px',
+                        marginBottom: '30px',
+                    }}
+                />
+                {/* memoFormの内容を開いて、MemoOfTextコンポーネントに情報を渡して表示 */}
+                {memoForm.map((item, index) => {
                     if (item.type === "text") {
                         return (
                             <MemoOfText
                                 key={item.order}
                                 order={item.order}
                                 content={item.content}
-                                onInputChange={handleInputChange}
+                                onInputChange={handleMemoChange}
                                 onDelete={handleDelete}
                             />
                         );
                     }
                     if (item.type === "img") {
                         return (
-                            <p>imgだよ</p>
-                        )
+                            <MemoOfImage
+                                key={item.order}
+                                order={item.order}
+                                content={item.content}
+                                onImageChange={handleMemoChange}
+                                onDelete={handleDelete}
+                            />
+                        );
                     }
                     return null;
                 })}
@@ -198,7 +320,3 @@ function CreateMemo() {
 }
 
 export default CreateMemo
-
-{/* <p>flaskdjflakwejfa;lkjd;laskjfal;skjfa;lkdjsafadsfkjekjsdnfaea;oiewj awiojawe;foijas  ;oiasef;oijwaer;ijawef:aif;piojga:piojreg:piaj  v:pijef:paijfa:wpoj</p>
-<p>fslakjkl;kjdf;lkasf;;al;bef;ajwefj;oijds</p>
-<img className= {styles.img} src='/default.png' alt="試し" /> */}
