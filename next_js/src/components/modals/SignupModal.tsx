@@ -59,10 +59,11 @@ const SignupModal = () => {
         toast.success('アカウントを作成しました!')
 
         // ログイン
-        await signIn('credentials', {
+        const result = await signIn('credentials', {
           ...data,
           redirect: false,
         })
+        console.log(result)
 
         signupModal.onClose()
         router.refresh()
