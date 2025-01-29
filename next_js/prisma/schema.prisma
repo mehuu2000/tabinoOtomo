@@ -21,10 +21,20 @@ model User {
   emailVerified  DateTime?
   state          String    @default("user")
   image          String?
+  intro          String?
   hashedPassword String?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
   accounts       Account[]
+  sessions       Session[]
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Account {
@@ -44,6 +54,28 @@ model Account {
 
   @@unique([provider, providerAccountId])
 }
+
+model Memo {
+  id        String     @id @default(uuid())
+  title     String?
+  items     MemoItem[] // MemoItemとのリレーション
+  userId    String
+  favorite  Boolean    @default(false)
+  visited   Boolean    @default(false)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model MemoItem {
+  id      Int      @id @default(autoincrement())
+  type    String   // "text" または "img"
+  content String   // テキストまたは画像URL
+  order   Int      // 表示順
+  memoId  String      // 親メモへの参照
+  memo    Memo     @relation(fields: [memoId], references: [id])
+}
+
+
 
 // model ApiCount {
 //   id Int @default(autoincrement()) @id

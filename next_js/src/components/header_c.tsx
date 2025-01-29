@@ -1,20 +1,17 @@
+'use client'
+
 import React from 'react';
 import styles from './module_css/header_c.module.css';
-import getCurrentUser from '@/app/actions/getCurentUser';
 import Menu from './navigation/Menu';
 
-// import { User } from '@prisma/client'
-
-// import Menu from '@/app/components/navigation/Menu'
+import { User } from '@prisma/client'
 import Link from 'next/link'
 
-// type NavigationProps = {
-//   currentUser: User | null
-// }
+type Header_cProps = {
+  currentUser: User | null
+}
 
-// const Navigation: React.FC<NavigationProps> = ({ currentUser }) => {
-export default async function Header_c() {
-  const currentUser = await getCurrentUser()
+const Header_c: React.FC<Header_cProps> = ({ currentUser }) => {
   return (
     <header className={styles.header} >
       <span></span>
@@ -28,3 +25,5 @@ export default async function Header_c() {
     </header>
   );
 }
+
+export default Header_c

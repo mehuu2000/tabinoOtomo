@@ -1,12 +1,9 @@
 'use client'
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import styles from "./home.module.css";
-
-import Header_c from "../../../components/header_c";
 import SideBar_c from "../../../components/sideBar_c";
-import Footer_c from "../../../components/footer_c";
 
 import { useApp } from './appContext';
 
@@ -41,19 +38,18 @@ import { useApp } from './appContext';
 // });
 
 export default function Main() {
-    const { select, setSelect, displayContent } = useApp();
+    // const { select, setSelect, displayContent } = useApp();
+    const { displayContent } = useApp();
 
     return (
       <>
         <div className={styles.main}>
-            <Header_c />
             <div className={styles.sideBar}>
                 <SideBar_c />
                 <div className={styles.contents}>
                     {displayContent()}
                 </div>
             </div>
-            <Footer_c />
         </div>
       </>
     );

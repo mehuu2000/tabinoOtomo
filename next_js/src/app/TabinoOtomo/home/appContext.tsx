@@ -6,6 +6,7 @@ import Memo_c from '../../../components/memo_c';
 import Inquiry_c from '../../../components/inquiry_c';
 import Setting_c from '../../../components/setting_c';
 import NotFound_c from '../../../components/notFound_c';
+import Memo from './memo/page';
 
 // コンテキストの型定義
 interface AppContextType {
@@ -15,7 +16,7 @@ interface AppContextType {
   choose: boolean;
   setChoose: React.Dispatch<React.SetStateAction<boolean>>;
   selectChoose: () => void;  // 戻り値は void に変更
-  SelectFounction: (func: string) => void;
+  SelectFounction: (func: string, selectedItems: string[]) => void;
 }
 
 // コンテキストの作成
@@ -31,14 +32,14 @@ export function AppProvider({ children }: AppProviderProps) {
   const [select, setSelect] = useState<string>("plan");
   
 
-  const displayContent = () => {
+  const displayContent = (): JSX.Element => {
     switch (select) {
       case "plan":
         return <Plan_c />;
       case "search":
         return <Search_c />;
       case "memo":
-        return <Memo_c />;
+        return <Memo />;
       case "inquiry":
         return <Inquiry_c />;
       case "setting":
@@ -53,34 +54,59 @@ export function AppProvider({ children }: AppProviderProps) {
 
   const selectChoose = () => {
     setChoose(prevChoose => !prevChoose);
-    console.log("setChoose関数が実行されました");
   };
 
-  const SelectFounction = (func: string) => {
+  const SelectFounction = (func: string, selectedItems: string[]): void => {
     switch (func) {
       case "favorite":
         console.log("お気に入りボタンが押されました。");
-        RemoveElements();
+        FavoritElements(selectedItems);
+        break;
       case "fin":
         console.log("終了ボタンが押されました");
-        FinelEments();
+        FinelEments(selectedItems);
+        break;
       case "delete":
         console.log("削除ボタンが押されました");
-        DeleteElements();
+        DeleteElements(selectedItems);
+        break;
       case "chat":
         console.log("チャットボタンが押されました");
-        ChatElements();
+        ChatElements(selectedItems);
         break;
     }
   }
     
-  const RemoveElements = () => {
+  const FavoritElements = async (selectedItems: string[]): Promise<void> => {
+    //お気に入り登録
+    try {
+      const response = await fetch('/api/updateMemoFavorite', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ selectedItems }),
+      });
+  
+      const result = await response.json();
+  
+      if (response.ok) {
+        console.log(result.message);
+      } else {
+        console.error(result.message);
+      }
+    } catch (error) {
+      console.error('お気に入り登録エラー:', error);
+    }
   }
-  const FinelEments = () => {
+  const FinelEments = (selectedItems: string[]): void => {
+    //完了処理
   }
-  const DeleteElements = () => {
+  const DeleteElements = (selectedItems: string[]): void => {
+    //アイテム削除
   }
-  const ChatElements = () => {
+  const ChatElements = (selectedItems: string[]): void => {
+    //チャット処理
   }
   
   const value = {

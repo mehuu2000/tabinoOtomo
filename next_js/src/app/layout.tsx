@@ -2,6 +2,13 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google'
 import AuthContext from './context/AuthContext';
+import SignupModal from '../components/modals/SignupModal';
+import LoginModal from '../components/modals/LoginModal';
+import getCurrentUser from './actions/getCurentUser';
+import ProfileModal from '../components/modals/ProfileModal';
+import Header_c from '@/components/header_c';
+import Footer_c from '@/components/footer_c';
+import ToasterContext from './context/ToastContext';
 // import getCurrentUser from './actions/getCurentUser';
 
 const inter = Inter({ subsets: ['latin'] })
@@ -12,10 +19,24 @@ export const metadata: Metadata = {
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  // const currentUser = await getCurrentUser()
+  const currentUser = await getCurrentUser()
   return (
     <html lang="ja">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <AuthContext>
+          {/* Toaster */}
+          <ToasterContext />
+          {/* モーダル */}
+          <SignupModal />
+          <LoginModal />
+          <ProfileModal currentUser={currentUser} />
+
+
+            <Header_c currentUser={currentUser}/>
+            {children}
+            <Footer_c />
+        </AuthContext>
+      </body>
     </html>
   )
 }

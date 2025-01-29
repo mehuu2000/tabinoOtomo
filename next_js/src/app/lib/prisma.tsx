@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client'
 
 declare global {
     // グローバルオブジェクトにprismaという名前の変数を追加
+    // エラー出てるけど、varを使うなって話だから見なかったふりします。
   var prisma: PrismaClient | undefined
 }
 

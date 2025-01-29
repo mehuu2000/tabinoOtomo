@@ -1,71 +1,102 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styles from '../components/module_css/memoList_c.module.css'
+import MemoItem from './UI/memoItem'
 
-export default function MemoList_c() {
-  return (
-    <div className={styles.main}>
-        <div className={styles.list}>
-            <div className={styles.memo}>
-                <div className={styles.contents}>
-                    <h3 className={styles.h3}>
-                        Daydream cafe
-                    </h3>
-                    <img src="/is_the_order_a_rabbit.jpg" alt="ごちうさ" />
-                    <p>
-                    こころぴょんぴょん待ち?
-                    考えるふりしてもうちょっと近づいちゃえ
-                    簡単には教えないっ
-                    こんなに好きなことは内緒なの
-                    ふわふわどきどき内緒ですよ
-                    はじめがかんじんつーんだつーんだ
-                    ふわふわどきどき内緒だって
-                    いたずら笑顔でぴょんぴょん
-                    </p>
-                </div>
+type Memo_cProps = {
+    session: { user: { id: string } } | null; // sessionの型を定義
+    selectedItems: string[];
+    setSelectedItems: React.Dispatch<React.SetStateAction<string[]>>;
+};
+
+type Item = {
+    id: number;
+    type: string;
+    content: string;
+    order: number;
+};
+
+type Memo = {
+    id: string;
+    title: string;
+    items: Item[];
+    favorite: boolean;
+    visited: boolean;
+};
+export default function MemoList_c({ session, selectedItems, setSelectedItems }: Memo_cProps) {
+    const [memos, setMemos] = useState<Memo[]>([]);
+    const [loading, setLoading] = useState(true);
+    
+
+    useEffect(() => {
+        console.log(session)
+        const fetchMemos = async () => {
+            if (!session?.user.id) {
+                console.log("セッションないよ");
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/getMemo', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ userId: session.user.id }), // userIdをバックエンドに送信
+                });
+
+                if (!response.ok) {
+                    throw new Error('fetchできませんでした。ここ？');
+                }
+
+                const data = await response.json();
+                setMemos(data.memos); // データを状態にセット
+            } catch (error) {
+                console.error('fetchのエラーメッセージ:', error);
+            } finally {
+                setLoading(false); // ローディング終了
+            }
+        };
+
+        fetchMemos();
+    }, []);
+
+    const itemSelection = (itemId: string) => {
+        setSelectedItems((prevSelectedItems) => {
+            const isSelected = prevSelectedItems.includes(itemId);
+            if (isSelected) {
+                // 既に選択されていたら解除
+                return prevSelectedItems.filter((id) => id !== itemId);
+            } else {
+                // 新たに選択された場合
+                return [...prevSelectedItems, itemId];
+            }
+        });
+    };
+
+    if (loading) {
+        return (
+            <div className={styles.main}>
+                <p>Loading...☆☆☆</p>
             </div>
-            <div className={styles.memo}>
-                <p>asdlfjafleajflkjdsalkfjlwekaj;lfkdsj;flkj;alsdmfjlvawm;oeiaj;flckaksf;iwja;lcif;maliesjd;fovinue;awivweacn;
-                    sじゃdlkfじゃlksdjf；あlkjdf；ぁksdj；f；lじゃ；ljfl永和j；fおいあjsd；lifジェをイアmfj；お会いjウェオフィぁm；sdおいjf
-                    ん・遺；エjr；apijg；味エアsじゃdlkfじゃlksdjf；あlkjdf；ぁksdj；f；lじゃ；ljfl永和j；fおいあjsd；lifジェをイアmfj；お
-                    会いjウェオフィぁm；sdおいjfん・遺；エjr；apijg；味エア
-                    sじゃdlkfじゃlksdjf；あlkjdf；ぁksdj；f；lじゃ；ljfl永和j；fおいあjsd；lifジェをイアmfj；お会いjウェオフィぁm；sdおいjfん・遺；エjr；apijg；味エア
-                    sじゃdlkfじゃlksdjf；あlkjdf；ぁksdj；f；lじゃ；ljfl永和j；fおいあjsd；lifジェをイアmfj；お会いjウェオフィぁm；sdおいjfん・遺；エjr；apijg；味エア
-                    sじゃdlkfじゃlksdjf；あlkjdf；ぁksdj；f；lじゃ；ljfl永和j；fおいあjsd；lifジェをイアmfj；お会いjウェオフィぁm；sdおいjfん・遺；エjr；apijg；味エア
-                    sじゃdlkfじゃlksdjf；あlkjdf；ぁksdj；f；lじゃ；ljfl永和j；fおいあjsd；lifジェをイアmfj；お会いjウェオフィぁm；sdおいjfん・遺；エjr；apijg；味エア
-                    </p>
-            </div>
-            <div className={styles.memo}>
-                <p>laskdjfkmwa;eafsファljkねlwファj；おいじょsd；オアfjオヴ；お会いjdkjhfgjんdhg；djfvお；伊j；藍フィジャ；オエウィjf；lあsdkjf；lkfかジェf；lじゃd；
-                    fじゃ；lエfj；葵エfj；ああcオエじょc伊mっjwmcぽ亜英j路藍mwcロイ亜wjロミウェルぽあvルパおxm郎エpvらm日ぇwprvにおあうrxvうろアイx、エ卯w路会うr、オアw卯
-                    m路あむぉらう４w０ルマw上０裏卯wr４８９亜ぺおvルパ８w無４xp８ヴmrPC亜８雨４twxmc亜４ウvpt８亜mv＠tムア8m４ウ青８ヴァ
-                </p>
-            </div>
-            <div className={styles.memo}>
-                <p>asdlfjafleajflkjdsalkfjlwekaj;lfkdsj;flkj;alsdmfjlvawm;oeiaj;flckaksf;iwja;lcif;maliesjd;fovinue;awivweacn;
-                    sじゃdlkfじゃlksdjf；あlkjdf；ぁksdj；f；lじゃ；ljfl永和j；fおいあjsd；lifジェをイアmfj；お会いjウェオフィぁm；sdおいjf
-                    ん・遺；エjr；apijg；味エアsじゃdlkfじゃlksdjf；あlkjdf；ぁksdj；f；lじゃ；ljfl永和j；fおいあjsd；lifジェをイアmfj；お
-                    会いjウェオフィぁm；sdおいjfん・遺；エjr；apijg；味エア
-                    sじゃdlkfじゃlksdjf；あlkjdf；ぁksdj；f；lじゃ；ljfl永和j；fおいあjsd；lifジェをイアmfj；お会いjウェオフィぁm；sdおいjfん・遺；エjr；apijg；味エア
-                    sじゃdlkfじゃlksdjf；あlkjdf；ぁksdj；f；lじゃ；ljfl永和j；fおいあjsd；lifジェをイアmfj；お会いjウェオフィぁm；sdおいjfん・遺；エjr；apijg；味エア
-                    sじゃdlkfじゃlksdjf；あlkjdf；ぁksdj；f；lじゃ；ljfl永和j；fおいあjsd；lifジェをイアmfj；お会いjウェオフィぁm；sdおいjfん・遺；エjr；apijg；味エア
-                    sじゃdlkfじゃlksdjf；あlkjdf；ぁksdj；f；lじゃ；ljfl永和j；fおいあjsd；lifジェをイアmfj；お会いjウェオフィぁm；sdおいjfん・遺；エjr；apijg；味エア
-                    </p>
-            </div>
-            <div className={styles.memo}>
-                <p>asdlfjafleajflkjdsalkfjlwekaj;lfkdsj;flkj;alsdmfjlvawm;oeiaj;flckaksf;iwja;lcif;maliesjd;fovinue;awivweacn;
-                    sじゃdlkfじゃlksdjf；あlkjdf；ぁksdj；f；lじゃ；ljfl永和j；fおいあjsd；lifジェをイアmfj；お会いjウェオフィぁm；sdおいjf
-                    ん・遺；エjr；apijg；味エアsじゃdlkfじゃlksdjf；あlkjdf；ぁksdj；f；lじゃ；ljfl永和j；fおいあjsd；lifジェをイアmfj；お
-                    会いjウェオフィぁm；sdおいjfん・遺；エjr；apijg；味エア
-                    sじゃdlkfじゃlksdjf；あlkjdf；ぁksdj；f；lじゃ；ljfl永和j；fおいあjsd；lifジェをイアmfj；お会いjウェオフィぁm；sdおいjfん・遺；エjr；apijg；味エア
-                    sじゃdlkfじゃlksdjf；あlkjdf；ぁksdj；f；lじゃ；ljfl永和j；fおいあjsd；lifジェをイアmfj；お会いjウェオフィぁm；sdおいjfん・遺；エjr；apijg；味エア
-                    sじゃdlkfじゃlksdjf；あlkjdf；ぁksdj；f；lじゃ；ljfl永和j；fおいあjsd；lifジェをイアmfj；お会いjウェオフィぁm；sdおいjfん・遺；エjr；apijg；味エア
-                    sじゃdlkfじゃlksdjf；あlkjdf；ぁksdj；f；lじゃ；ljfl永和j；fおいあjsd；lifジェをイアmfj；お会いjウェオフィぁm；sdおいjfん・遺；エjr；apijg；味エア
-                    </p>
+        )
+    }
+    
+    return (
+        <div className={styles.main}>
+            <div className={styles.list}>
+                {memos.map((memo) => (
+                    <MemoItem
+                        key={memo.id}
+                        id={memo.id}
+                        title={memo.title}
+                        items={memo.items}
+                        favorite={memo.favorite}
+                        visited={memo.visited}
+                        onClick={() => itemSelection(memo.id)}
+                        isSelected={selectedItems.includes(memo.id)}
+                    />
+                ))}
             </div>
         </div>
-        <button className={styles.button}>
-            新規作成
-        </button>
-    </div>
-  )
+    )
 }
