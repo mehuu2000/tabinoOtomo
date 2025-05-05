@@ -14,10 +14,30 @@ interface AppContextType {
   setSelect: React.Dispatch<React.SetStateAction<string>>;
   displayContent: () => JSX.Element;
   choose: boolean;
+  selectedItems: string[];
+  setSelectedItems: React.Dispatch<React.SetStateAction<string[]>>
   setChoose: React.Dispatch<React.SetStateAction<boolean>>;
   selectChoose: () => void;  // 戻り値は void に変更
   SelectFounction: (func: string, selectedItems: string[]) => void;
+  memos: Memo[];
+  setMemos: React.Dispatch<React.SetStateAction<Memo[]>>
 }
+
+type Item = {
+  id: number;
+  type: string;
+  content: string;
+  order: number;
+};
+
+type Memo = {
+  id: string;
+  title: string;
+  items: Item[];
+  favorite: boolean;
+  visited: boolean;
+  createdAt: Date;
+};
 
 // コンテキストの作成
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -51,6 +71,8 @@ export function AppProvider({ children }: AppProviderProps) {
 
 //   const [chooseFunc, setChooseFunc] = useState<string>("");
   const [choose, setChoose] = useState<boolean>(false);
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const [memos, setMemos] = useState<Memo[]>([]);
 
   const selectChoose = () => {
     setChoose(prevChoose => !prevChoose);
@@ -92,19 +114,77 @@ export function AppProvider({ children }: AppProviderProps) {
   
       if (response.ok) {
         console.log(result.message);
-      } else {
+        // Memoの状態を更新
+        setMemos((prevMemos) =>
+            prevMemos.map((memo) =>
+                selectedItems.includes(memo.id)
+                    ? { ...memo, favorite: !memo.favorite } // favoriteを更新
+                    : memo
+            )
+        );
+    } else {
         console.error(result.message);
       }
     } catch (error) {
       console.error('お気に入り登録エラー:', error);
     }
   }
-  const FinelEments = (selectedItems: string[]): void => {
+  const FinelEments = async (selectedItems: string[]): Promise<void> => {
     //完了処理
+    try {
+      const response = await fetch('/api/updateMemoVisited', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ selectedItems }),
+      });
+  
+      const result = await response.json();
+  
+      if (response.ok) {
+        console.log(result.message);
+        // Memoの状態を更新
+        setMemos((prevMemos) =>
+            prevMemos.map((memo) =>
+                selectedItems.includes(memo.id)
+                    ? { ...memo, visited: !memo.visited } // visitedを更新
+                    : memo
+            )
+        );
+    } else {
+        console.error(result.message);
+      }
+    } catch (error) {
+      console.error('完了登録エラー:', error);
+    }
   }
-  const DeleteElements = (selectedItems: string[]): void => {
-    //アイテム削除
-  }
+  const DeleteElements = async (selectedItems: string[]): Promise<void> => {
+    //メモ削除
+    try {
+      const response = await fetch('/api/deleteMemo', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ selectedItems }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log(result.message);
+        // クライアント側の状態を更新
+        setMemos((prevMemos) =>
+          prevMemos.filter((memo) => !selectedItems.includes(memo.id))
+        );
+      } else {
+        console.error(result.message);
+      }
+    } catch (error) {
+      console.error('削除エラー:', error);
+    }
+};
   const ChatElements = (selectedItems: string[]): void => {
     //チャット処理
   }
@@ -115,8 +195,12 @@ export function AppProvider({ children }: AppProviderProps) {
     displayContent,
     choose,
     setChoose,
+    selectedItems,
+    setSelectedItems,
     selectChoose,
     SelectFounction,
+    memos,
+    setMemos,
   };
 
   return (

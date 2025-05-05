@@ -15,7 +15,7 @@ export async function POST(request: Request) {
         },
         select: {
           id: true,
-          favorite: true,
+          visited: true,
         },
       });
   
@@ -23,7 +23,7 @@ export async function POST(request: Request) {
         return prisma.memo.update({
           where: { id: memo.id },
           data: {
-            favorite: !memo.favorite,
+            visited: !memo.visited,
           },
         });
       });
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
       // 全ての更新処理を非同期に実行
       const updatedMemos = await Promise.all(updatedMemosPromises);
   
-      return NextResponse.json({ message: `${updatedMemos.length} 件のメモがお気に入りに登録/非登録にされました` });
+      return NextResponse.json({ message: `${updatedMemos.length} 件のメモが完了に登録/非登録にされました` });
   
     } catch (error) {
       console.error(error);

@@ -9,14 +9,14 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("SUPABASE_URL")
+  provider = "postgresql"
+  url      = env("SUPABASE_URL")
   // directUrl = env("DIRECT_URL")
 }
 
 model User {
   id             String    @id @default(uuid())
-  name           String?
+  name           String?   @unique
   email          String?   @unique
   emailVerified  DateTime?
   state          String    @default("user")
@@ -25,17 +25,13 @@ model User {
   hashedPassword String?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
-  accounts       Account[]
-  sessions       Session[]
+
+  accounts Account[]
+  sessions Session[]
+  memos    Memo[]    @relation("UserMemos")
+  plans    Plan[]
 }
 
-model Session {
-  id           String   @id @default(uuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
 
 model Account {
   id                String  @id @default(uuid())
@@ -55,27 +51,72 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
 model Memo {
-  id        String     @id @default(uuid())
+  id        String   @id @default(uuid())
   title     String?
-  items     MemoItem[] // MemoItemとのリレーション
   userId    String
-  favorite  Boolean    @default(false)
-  visited   Boolean    @default(false)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  favorite  Boolean  @default(false)
+  visited   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  toPlanId String? // Planへの参照
+  items    MemoItem[] // MemoItemとのリレーション
+  user     User       @relation("UserMemos", fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model MemoItem {
-  id      Int      @id @default(autoincrement())
-  type    String   // "text" または "img"
-  content String   // テキストまたは画像URL
-  order   Int      // 表示順
-  memoId  String      // 親メモへの参照
-  memo    Memo     @relation(fields: [memoId], references: [id])
+  id      Int    @id @default(autoincrement())
+  type    String // "text" または "img"
+  content String // テキストまたは画像URL
+  order   Int // 表示順
+
+  memoId String // 親メモへの参照
+  memo   Memo   @relation(fields: [memoId], references: [id], onDelete: Cascade)
 }
 
+model Spot {
+  id          Int      @id @default(autoincrement())
+  prectures   String // 都道府県名
+  name        String // スポット名
+  description String // スポットの説明
+  imageUrl    String // スポットの画像URL
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
 
+model Plan {
+  id           Int      @id @default(autoincrement())
+  userId       String
+  title        String
+  days         Int // 旅行日数
+  fromWhen     Int // 旅行開始日
+  conectMemoId String? // メモへの参照
+  isPublic     Boolean  @default(false) // 公開フラグ
+  createAt     DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  spots PlanItem[] // 旅行先
+  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PlanItem {
+  id     Int @id @default(autoincrement())
+  planId Int
+  spotId Int
+  day    Int // 何日目
+  order  Int // 何日目のうちの何番目
+
+  plan Plan @relation(fields: [planId], references: [id], onDelete: Cascade)
+}
 
 // model ApiCount {
 //   id Int @default(autoincrement()) @id
@@ -83,17 +124,6 @@ model MemoItem {
 //   googleMap Int @default(0)
 //   twitter Int @default(0)
 //   gemini Int @default(0)
-// }
-
-
-// model Plan {
-//   id Int @default(autoincrement()) @id
-//   userId Int
-//   title String
-//   days Int
-//   fromWhen Int
-//   toTrabelId Int[]
-//   createAt DateTime @default(now())
 // }
 
 // model ToTrabel {

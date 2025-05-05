@@ -10,6 +10,7 @@ const getCurrentUser = async () => {
 
     // ログインしていない場合
     if (!session?.user?.email) {
+      console.log("カレントユーザ：セッションないよ")
       return null
     }
 
@@ -21,9 +22,11 @@ const getCurrentUser = async () => {
     })
 
     if (!response) {
+      console.log("データベースにユーザいないよ")
       return null
     }
 
+    // console.log(`どんな感じやろ：${response.id}`)
     return response
   } catch (error) {
     return null

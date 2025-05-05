@@ -13,18 +13,26 @@ import AddIcon from '@mui/icons-material/Add';
 import { useRouter } from 'next/navigation';
 import { useApp } from '../../app/TabinoOtomo/home/appContext';
 
+interface OtherFuncProps {
+    choose: boolean;
+    selectChoose: () => void;
+    SelectFounction: (func: string, plans: string[]) => void;
+    selectedItems: string[];
+    setSelectedItems: React.Dispatch<React.SetStateAction<string[]>>;
+}
 
-export default function OtherFunc_u() {
-    const { choose, selectChoose, SelectFounction, selectedItems, setSelectedItems  } = useApp();
+
+
+export default function OtherFunc_u({choose, selectChoose, SelectFounction, selectedItems, setSelectedItems}:OtherFuncProps) {
     const router = useRouter();
 
     const handleClick = () => {
-        router.push('/TabinoOtomo/home/memo/newCreateMemo');
+        router.push('/TabinoOtomo/home/createSelect');
     };
 
-    const handleFounction = (func: string, memos: string[]) => {
+    const handleFounction = (func: string, plans: string[]) => {
         if(selectedItems.length != 0) {
-            SelectFounction(func, memos)
+            SelectFounction(func, plans)
             router.refresh()
         } else {
             console.log("一つ以上選択してください")

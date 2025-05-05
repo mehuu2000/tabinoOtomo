@@ -49,22 +49,22 @@ export const authOptions: NextAuthOptions = {
       })
   ],
   session: {
-    strategy: "database",
-    maxAge: 3 * 24 * 60 * 60, // 3日間
+    strategy: "jwt",
+    // maxAge: 3 * 24 * 60 * 60, // 3日間
   },
-  callbacks: {
-    async session({ session, user }) {
-      if (session?.user) {
-        session.user.id = user.id;
-      }
-      return session;
-    }
-  },
-
   secret: process.env.NEXTAUTH_SECRET,
-  
+  // callbacks: {
+  //   async session({ session, user }) {
+  //     if (session?.user) {
+  //       session.user.id = user.id;
+  //     }
+  //     return session;
+  //   }
+  // },
+
+
   // debug: process.env.NODE_ENV === 'development',
-  debug: false,
+  // debug: false,
 }
 
 const handler = NextAuth(authOptions)

@@ -1,18 +1,14 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from "@prisma/client";
 
 declare global {
-    // グローバルオブジェクトにprismaという名前の変数を追加
-    // エラー出てるけど、varを使うなって話だから見なかったふりします。
-  var prisma: PrismaClient | undefined
+  // eslint-disable-next-line no-var
+  var prisma: PrismaClient | undefined;
 }
 
-// PrismaClientのインスタンス作成
-// グローバルに設定されているprismaインスタンスがあればそれを使い、なければ新しくインスタンする
-const client = globalThis.prisma || new PrismaClient()
+const client = globalThis.prisma || new PrismaClient();
 
-// 開発環境でのみグローバルオブジェクトにprismaクライアントを保存する
-if (process.env.NODE_ENV !== 'production') {
-  globalThis.prisma = client
+if (process.env.NODE_ENV !== "production") {
+  globalThis.prisma = client;
 }
 
-export default client
+export default client;

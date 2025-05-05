@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useApp } from '../../app/TabinoOtomo/home/appContext';
 import StarIcon from '@mui/icons-material/Star';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import styles from '../../components/module_css/memoList_c.module.css';
+import { useRouter } from 'next/navigation';
 
 type Item = {
     id: number;
@@ -23,6 +24,11 @@ type MemoItemProps = {
 
 function MemoItem({ id, title, items, favorite, visited, onClick, isSelected }: MemoItemProps) {
     const { choose } = useApp();
+    const router = useRouter();
+
+    useEffect(() => {
+        router.refresh()
+    }, [favorite, visited]);
 
     const handleClick = () => {
         if(choose) {

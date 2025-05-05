@@ -20,6 +20,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const currentUser = await getCurrentUser()
+  // console.log(currentUser)
   return (
     <html lang="ja">
       <body className={inter.className}>
@@ -30,8 +31,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <SignupModal />
           <LoginModal />
           <ProfileModal currentUser={currentUser} />
-
-
             <Header_c currentUser={currentUser}/>
             {children}
             <Footer_c />

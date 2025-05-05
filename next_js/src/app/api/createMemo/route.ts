@@ -54,7 +54,7 @@ export async function POST(req: Request) {
                 const fileName = `${timestamp}-${userId}-${item.order}.jpg`;
 
                 // Supabaseストレージにアップロード
-                const { error: uploadError } = await supabase
+                const { data, error } = await supabase
                     .storage
                     .from(BUCKET_NAME)
                     .upload(`images/${fileName}`, buffer, {
@@ -62,27 +62,22 @@ export async function POST(req: Request) {
                         upsert: true
                     });
 
-                    if (uploadError) {
-                        console.error('Upload error:', uploadError);
-                        throw uploadError;
+                    if (error) {
+                        console.error('Upload error:', error);
+                        throw error;
                     }
 
                 // アップロード後、画像のURLを取得
-                const { data: signedData, error: signedError } = await supabase
-                            .storage
+                const { data: { publicUrl } } = supabase.storage
                             .from(BUCKET_NAME)
-                            .createSignedUrl(`images/${fileName}`, 31536000); // 1年間有効
-
-                if (signedError || !signedData) {
-                    throw new Error('Failed to get signed URL');
-                }
+                            .getPublicUrl(data.path);
 
                 // contentをBase64からURLに更新
-                const safeUrl = signedData.signedUrl;
+                // const safeUrl = signedData.signedUrl;
 
                 return {
                     ...item,
-                    content: safeUrl
+                    content: publicUrl,
                 };
             }
 

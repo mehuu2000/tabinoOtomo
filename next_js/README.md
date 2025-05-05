@@ -44,3 +44,10 @@ flaskの起動は
 
 prismaの起動は
 ```npx prisma studio```
+
+ubuntu側
+venv起動は
+```. ~/venvs/Tabitomo_venv/bin/activate```
+
+FastAPI起動は
+```python main.py```

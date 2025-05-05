@@ -6,7 +6,7 @@ import StickyNote2Icon from '@mui/icons-material/StickyNote2';
 import ContactPhoneOutlinedIcon from '@mui/icons-material/ContactPhoneOutlined';
 import SettingsSuggestRoundedIcon from '@mui/icons-material/SettingsSuggestRounded';
 import { useApp } from '../app/TabinoOtomo/home/appContext';
-import { useRouter } from 'next/navigation'
+// import { useRouter } from 'next/navigation'
 
 // interface SideBarProps {
 //     select: string;
@@ -14,11 +14,11 @@ import { useRouter } from 'next/navigation'
 // }
 
 export default function SideBar_c() {
-    const router = useRouter();
+    // const router = useRouter();
     const { select, setSelect }= useApp();
     const handleSelectChange = (newSelect: string) => {
         setSelect(newSelect);
-        router.refresh()
+        // router.refresh()
     };
 
     const getClassName = (option: string) => {

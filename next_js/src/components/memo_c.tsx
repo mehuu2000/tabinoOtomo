@@ -1,41 +1,46 @@
-'use client'
-
 import React, { useState, useEffect } from 'react'
 import MemoList_c from './memoList_c';
 import OtherFunc_u from './UI/otherFunc_u';
 import styles from './module_css/memo_c.module.css';
-import getCurrentUser from '@/app/actions/getCurentUser';
 import { User as PrismaUser } from '@prisma/client';
+import { useSession } from 'next-auth/react';
+// import prisma from '@/app/lib/prisma';
 
-type Memo_cProps = {
-    session: { user: { id: string } } | null; // sessionの型を定義
-};
+export default function Memo_c() {
+    const { data: sessionData } = useSession();
+    const [currentUser, setCurrentUser] = useState<PrismaUser | null>(null);
 
-export default function Memo_c({ session }: Memo_cProps) {
-
-    const [currentUser, setCurrentUser] = useState<PrismaUser | null>(null);;
     useEffect(() => {
-        // 非同期処理をuseEffect内で実行
         const fetchUser = async () => {
-            const user = await getCurrentUser();
-            console.log(`カレントユーザー：${user}`);
-            setCurrentUser(user); // currentUserの状態を更新
+          if (sessionData?.user?.email) {
+            try {
+              const response = await fetch('/api/getUser');
+              const data = await response.json();
+              
+              if (response.ok) {
+                setCurrentUser(data); // サーバーから返されたユーザー情報を状態にセット
+              } else {
+                console.error('ユーザー情報の取得に失敗しました:', data.message);
+              }
+            } catch (error) {
+              console.error('API呼び出しエラー:', error);
+            }
+          }
         };
-        fetchUser();
-    }, []); // コンポーネントがマウントされたときのみ実行
+    
+        if (sessionData?.user?.email) {
+          fetchUser();
+        }
+    }, [sessionData]);
 
-    const [selectedItems, setSelectedItems] = useState<string[]>([]);
+    useEffect(() => {
+        console.log(`カレントユーザー1：${currentUser?.id}`);
+    }, [currentUser]);
+
     return(
         <div className={styles.main}>
-            <MemoList_c 
-                session={session}
-                selectedItems={selectedItems}
-                setSelectedItems={setSelectedItems} 
-      />
-            <OtherFunc_u 
-                selectedItems={selectedItems}
-                setSelectedItems={setSelectedItems} 
-            />
+            <MemoList_c currentUser={currentUser} />
+            <OtherFunc_u />
         </div>
     )
 

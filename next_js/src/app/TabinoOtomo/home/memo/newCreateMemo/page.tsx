@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './newCreateMemo.module.css';
 import { useSession } from 'next-auth/react';
 
@@ -13,6 +13,7 @@ import AddIcon from '@mui/icons-material/Add'; //プラス
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined'; //テキスト
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined'; //イメージ
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined'; //完了
+import { User as PrismaUser } from '@prisma/client';
 
 import { useRouter } from 'next/navigation';
 
@@ -29,7 +30,39 @@ function CreateMemo() {
         order: number;
     }[]>([]);
 
-    const { data: session, status } = useSession();
+    const { data: session } = useSession();
+    // const { data: session, status } = useSession();
+    const [currentUser, setCurrentUser] = useState<PrismaUser | null>(null);
+
+    //サーバーサイドから情報を取得←useSessionで取れよ
+    //できないんだよ
+    //いや、それはauthのところのcallback, async sessionのところで設定できるやろ
+    //めんどくさいんだよ！
+    useEffect(() => {
+        const fetchUser = async () => {
+            if (session?.user?.email) {
+            try {
+                const response = await fetch('/api/getUser');
+                const data = await response.json();
+                
+                if (response.ok) {
+                setCurrentUser(data); // サーバーから返されたユーザー情報を状態にセット
+                } else {
+                console.error('ユーザー情報の取得に失敗しました:', data.message);
+                }
+            } catch (error) {
+                console.error('API呼び出しエラー:', error);
+            }
+            }
+        };
+    
+        if (session?.user?.email) {
+            fetchUser();
+        }
+    }, [session]);
+    useEffect(() => {
+        console.log(currentUser?.id)
+    }, [currentUser]);
 
     //タイトルの変更を反映
     const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,11 +134,11 @@ function CreateMemo() {
     //メモ作成
     const handleMemoCreate = async () => {
         console.log("メモ作成ボタンが押されました。");
-        console.log(`識別ユーザIDは${session?.user.id}です`);
+        console.log(`識別ユーザIDは${currentUser?.id}です`);
         console.log(memoForm);
         console.log(memoTitle);
 
-        if(session?.user.id) {
+        if(currentUser?.id) {
             try {
                 const filteredMemoForm = memoForm.filter(item => item.content.trim() !== '');
 
@@ -118,7 +151,7 @@ function CreateMemo() {
                         body: JSON.stringify({ 
                             memoTitle: memoTitle,
                             memoForm: filteredMemoForm,
-                            userId: session?.user.id,
+                            userId: currentUser?.id,
                         }),
                     });
             
@@ -288,7 +321,8 @@ function CreateMemo() {
                     }}
                 />
                 {/* memoFormの内容を開いて、MemoOfTextコンポーネントに情報を渡して表示 */}
-                {memoForm.map((item, index) => {
+                {memoForm.map((item) => {
+                // {memoForm.map((item, index) => {
                     if (item.type === "text") {
                         return (
                             <MemoOfText

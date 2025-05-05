@@ -1,37 +1,40 @@
 import React, { useState, useEffect } from 'react'
 import styles from '../components/module_css/memoList_c.module.css'
 import MemoItem from './UI/memoItem'
+import { useApp } from '../app/TabinoOtomo/home/appContext';
+import { User as PrismaUser } from '@prisma/client';
+// import { useRouter } from 'next/navigation';
 
-type Memo_cProps = {
-    session: { user: { id: string } } | null; // sessionの型を定義
-    selectedItems: string[];
-    setSelectedItems: React.Dispatch<React.SetStateAction<string[]>>;
+
+// type Item = {
+//     id: number;
+//     type: string;
+//     content: string;
+//     order: number;
+// };
+
+// type Memo = {
+//     id: string;
+//     title: string;
+//     items: Item[];
+//     favorite: boolean;
+//     visited: boolean;
+//     createdAt: Date;
+// };
+
+type MemoListProps = {
+    currentUser: PrismaUser | null;
 };
 
-type Item = {
-    id: number;
-    type: string;
-    content: string;
-    order: number;
-};
-
-type Memo = {
-    id: string;
-    title: string;
-    items: Item[];
-    favorite: boolean;
-    visited: boolean;
-};
-export default function MemoList_c({ session, selectedItems, setSelectedItems }: Memo_cProps) {
-    const [memos, setMemos] = useState<Memo[]>([]);
+export default function MemoList_c({ currentUser }: MemoListProps) {
     const [loading, setLoading] = useState(true);
+    const { selectedItems, setSelectedItems, memos, setMemos } = useApp();
+    // const router = useRouter();
     
 
     useEffect(() => {
-        console.log(session)
         const fetchMemos = async () => {
-            if (!session?.user.id) {
-                console.log("セッションないよ");
+            if (!currentUser?.id) {
                 return;
             }
 
@@ -41,7 +44,7 @@ export default function MemoList_c({ session, selectedItems, setSelectedItems }:
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ userId: session.user.id }), // userIdをバックエンドに送信
+                    body: JSON.stringify({ userId: currentUser.id }), // userIdをバックエンドに送信
                 });
 
                 if (!response.ok) {
@@ -58,7 +61,7 @@ export default function MemoList_c({ session, selectedItems, setSelectedItems }:
         };
 
         fetchMemos();
-    }, []);
+    }, [currentUser]);
 
     const itemSelection = (itemId: string) => {
         setSelectedItems((prevSelectedItems) => {
@@ -84,7 +87,13 @@ export default function MemoList_c({ session, selectedItems, setSelectedItems }:
     return (
         <div className={styles.main}>
             <div className={styles.list}>
-                {memos.map((memo) => (
+            {memos
+                .sort((a, b) => {
+                    const dateA = new Date(a.createdAt); // createdAtをDateオブジェクトに変換
+                    const dateB = new Date(b.createdAt); // createdAtをDateオブジェクトに変換
+                    return dateA.getTime() - dateB.getTime(); // 昇順に並べ替え
+                })
+                .map((memo) => (
                     <MemoItem
                         key={memo.id}
                         id={memo.id}
