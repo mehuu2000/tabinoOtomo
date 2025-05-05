@@ -40,7 +40,14 @@ next.jsの起動は
 ```npm run dev```
 
 flaskの起動は
-```flask --app main run```
+```python3 main.py```
 
 prismaの起動は
 ```npx prisma studio```
+
+ubuntu側
+venv起動は
+```. ~/venvs/Tabitomo_venv/bin/activate```
+
+FastAPI起動は
+```python main.py```

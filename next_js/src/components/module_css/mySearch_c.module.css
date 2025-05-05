@@ -1,0 +1,47 @@
+.main {
+    height: calc(100vh - 90px);
+    width: 100%;
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+}
+
+.information {
+    height: 70%;
+    width: 60%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: rgba(137, 68, 255, 0.2);
+    border-radius: 40px;
+}
+
+.h2 {
+    font-size: 1.5rem;
+}
+
+.contents {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin: 10px;
+}
+
+.button {
+    height: 50px;
+    width: 180px;
+    background-color: rgb(179, 128, 226);
+    border-radius: 20px;
+    margin-top: 30px;
+}

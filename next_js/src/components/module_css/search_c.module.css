@@ -1,0 +1,140 @@
+.searchContainer {
+    height: calc(100vh - 90px);
+    margin: 0 auto;
+    padding: 20px 20px 0px 20px;
+  }
+
+.searchHeader {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    flex-direction: row;
+}
+
+.switchContainer {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+
+}
+  
+  .pageTitle {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #333;
+    margin-right: 20px;
+  }
+  
+  .searchForm {
+    display: flex;
+    margin-bottom: 20px;
+    max-width: 600px;
+    min-width: 400px;
+  }
+  
+  .searchInput {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px 0 0 4px;
+    font-size: 16px;
+  }
+  
+  .searchButton {
+    background-color: #1976d2;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.2s;
+  }
+  
+  .searchButton:hover {
+    background-color: #1565c0;
+  }
+  
+  .resultInfo {
+    margin-bottom: 20px;
+    color: #666;
+  }
+  
+  .spotsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  
+  .spotCard {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+  }
+  
+  .spotCard:hover {
+    transform: translateY(-5px);
+  }
+  
+  .imageContainer {
+    height: 200px;
+    overflow: hidden;
+  }
+  
+  .spotImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+  }
+  
+  .spotCard:hover .spotImage {
+    transform: scale(1.05);
+  }
+  
+  .spotInfo {
+    padding: 15px;
+  }
+  
+  .spotName {
+    font-size: 18px;
+    margin: 0 0 5px;
+    color: #333;
+  }
+  
+  .spotPrefecture {
+    color: #1976d2;
+    font-weight: 500;
+    margin: 0 0 10px;
+    font-size: 14px;
+  }
+  
+  .spotDescription {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  .errorContainer {
+    padding: 20px;
+    background-color: #ffebee;
+    color: #c62828;
+    border-radius: 4px;
+    text-align: center;
+    margin: 20px 0;
+  }
+  
+  .noResults {
+    text-align: center;
+    padding: 40px 0;
+    color: #666;
+    font-size: 18px;
+  }
+  .paginationContainer {
+    margin-top: 30px;
+    padding-bottom: 20px;
+    display: flex;
+    justify-content: center;
+  }

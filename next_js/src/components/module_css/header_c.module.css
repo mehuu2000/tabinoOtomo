@@ -1,0 +1,18 @@
+.header {
+    height: 60px;
+    width: 100%;
+    /* border-radius: 0 0 20px 20px; */
+    font-size: 1.25rem; /* 20px */
+    color: white;
+    background: linear-gradient(to right, #8944FF, #3C49FF);
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    margin-bottom: 5px;
+    padding: 0 80px 0 80px;
+    cursor: pointer;
+    font-weight: bold;
+}

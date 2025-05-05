@@ -1,0 +1,70 @@
+.main {
+    height: calc(100vh - 90px);
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border-right: 1px solid black;
+}
+
+.list {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 0px;
+    overflow-y: auto; 
+}
+
+.memo {
+    min-height: 3rem;
+    max-height: 300px;
+    overflow-y: auto;
+    border-radius: 20px;
+    border: 1px solid black;
+    text-align: left;
+    overflow-wrap: break-word;
+    margin: 10px;
+    cursor: pointer;
+}
+
+.memo::-webkit-scrollbar {
+  width: 0; /* スクロールバーの幅をゼロに設定 */
+  height: 0; /* 横スクロールバーもゼロに設定 */
+}
+
+.contents {
+    margin: 5px;
+}
+
+.h3 {
+    font-size: 18px;
+    margin: 0 0 5px 5px;
+    color: rgb(93, 0, 255);
+    display: flex;
+    align-items: center;
+}
+
+.itemP , .itemImg {
+    margin-bottom: 10px;
+}
+
+@keyframes borderAnimation {
+    0% {
+        box-shadow: 0 0 5px blueviolet, 0 0 10px rgba(138, 43, 226, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 15px blueviolet, 0 0 30px rgba(138, 43, 226, 0.1);
+    }
+    100% {
+        box-shadow: 0 0 5px blueviolet, 0 0 10px rgba(138, 43, 226, 0.3);
+    }
+}
+
+.selected {
+    margin: 6px;
+    border: 3px solid rgba(138, 43, 226, 0.7);
+    position: relative;
+    animation: borderAnimation 3s infinite alternate ease-in-out;
+}
