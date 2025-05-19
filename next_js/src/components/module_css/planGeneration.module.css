@@ -1,0 +1,607 @@
+.main {
+    height: calc(100vh - 90px);
+    width: 100%;
+    margin-top: 60px;
+    flex-grow: 1;
+    background-color: white;
+}
+
+.containers {
+    display: flex;
+    justify-content: start;
+    align-items: start;
+    flex-direction: column;
+    margin: 0 20px;
+}
+
+.head {
+    width: 100%;
+    margin: 20px 0 10px 0;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    flex-direction: row;
+}
+
+.saveButton {
+    height: 40px;
+    width: 120px;
+    border-radius: 20px;
+    margin-left: 50px;
+    white-space: nowrap; /* テキストの改行を防止 */
+    flex-shrink: 0;
+}
+.saveButtonTrue {
+    background-color: rgba(137, 68, 255, 0.5);
+}
+.saveButtonFalse {
+    background-color: rgb(212, 212, 212);
+}
+
+.closeSpot {
+    margin-right: 20px;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    border: 1px solid rgba(137, 68, 255, 0.2);
+}
+.openSpot {
+    margin-right: 20px;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    background-color: rgb(222, 201, 255);
+}
+
+.dayButton {
+    height: 30px;
+    width: 70px;
+    padding: 2px 10px;
+    border-radius: 20px;
+    margin-right: 10px;
+}
+
+.dayButtonTrue {
+    border: 1px solid rgba(137, 68, 255, 0.5);
+    background-color: rgba(137, 68, 255, 0.5);
+    transition: background-color 0.5s;
+}
+
+.dayButtonFalse {
+    border: 1px solid rgba(137, 68, 255, 0.5);
+    transition: background-color 0.5s;
+}
+:hover.dayButtonFalse {
+    background-color: rgba(137, 68, 255, 0.2);
+}
+
+.planName {
+    border: none;
+    border-bottom : 1px solid rgba(137, 68, 255, 0.2);
+    width : 200px;
+    outline: none;
+    transition: border-bottom 0.3s;
+    color: rgb(137, 68, 255);
+    font-size: 1.3rem;
+}
+.planName:focus {
+    border-bottom: 1px solid rgba(137, 68, 255, 0.8); /* フォーカス時は下線を太く、濃く */
+    outline: none; /* フォーカス時のアウトラインも非表示 */
+}
+
+.when {
+    white-space: nowrap; /* テキストの改行を防止 */
+    flex-shrink: 0;
+    margin: 0 20px;  
+}
+
+.daysList {
+    display: flex;
+    width: 40%;
+    justify-content: start;
+    align-items: center;
+    flex-direction: row;
+    overflow-x: auto;
+    scrollbar-width: thin; 
+    scrollbar-color: rgba(137, 68, 255, 0.2) transparent;
+    white-space: nowrap; /* テキストの改行を防止 */
+    flex-shrink: 0;
+    padding-bottom: 4px;
+}
+.daysList::-webkit-scrollbar {
+    height: 2px; /* 高さを2pxに縮小 */
+    width: auto;
+}
+
+.daysList::-webkit-scrollbar-track {
+    background: transparent; /* 背景を透明に */
+    border-radius: 1px; 
+    margin: 0 15%; /* 両端に余白を作って短くする */
+}
+
+.daysList::-webkit-scrollbar-thumb {
+    background-color: rgba(137, 68, 255, 0.3); /* より透明に */
+    border-radius: 1px;
+}
+
+/* ホバー時には少し目立つように */
+.daysList:hover::-webkit-scrollbar-thumb {
+    background-color: rgba(137, 68, 255, 0.5); /* ホバー時は少し濃く */
+}
+
+.spotList {
+    height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+
+
+
+
+/* 選択されたスポット表示エリア全体 */
+.selectedSpots {
+    background-color: rgb(246, 241, 255);
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    
+    /* 追加する位置の固定スタイル */
+    position: absolute;
+    top: 110px;
+    left: 20px;
+    right: 20px;
+    width: calc(100% - 40px); /* コンテナの幅を考慮 */
+    z-index: 10; /* 他の要素より前面に表示 */
+}
+
+/* スポットが選択されていない場合の表示 */
+.noSelectSpots {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    color: #666;
+}
+
+.noSelectSpots p {
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+/* 日付ごとのスポット表示コンテナ */
+.daysContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+/* 日付タブ */
+.dayTabs {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid rgba(137, 68, 255, 0.2);
+}
+
+.dayTab {
+    padding: 8px 16px;
+    background: none;
+    border: none;
+    border-radius: 20px;
+    margin-right: 10px;
+    cursor: pointer;
+    white-space: nowrap;
+    color: #555;
+    transition: all 0.3s;
+}
+
+.activeTab {
+    background-color: rgb(137, 68, 255);
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(137, 68, 255, 0.3);
+}
+
+/* 日ごとのスポット一覧 */
+.daySpotsList {
+    position: relative;
+    min-height: 150px;
+}
+
+.daySpotsGroup {
+    width: 100%;
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.activeDaySpots {
+    opacity: 1;
+    transform: translateX(0);
+    display: block;
+}
+
+.hiddenDaySpots {
+    opacity: 0;
+    transform: translateX(20px);
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+}
+
+.noSpotsForDay {
+    text-align: center;
+    padding: 30px;
+    color: #888;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 8px;
+}
+
+/* スポット横スクロールコンテナ */
+.spotsScrollContainer {
+    display: flex;
+    overflow-x: auto;
+    padding: 10px 5px;
+    gap: 15px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(137, 68, 255, 0.3) transparent;
+}
+
+.spotsScrollContainer::-webkit-scrollbar {
+    height: 5px;
+}
+
+.spotsScrollContainer::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.spotsScrollContainer::-webkit-scrollbar-thumb {
+    background-color: rgba(137, 68, 255, 0.3);
+    border-radius: 10px;
+}
+
+/* 選択されたスポットカード */
+.selectedSpotCard {
+    position: relative;
+    width: 120px;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+}
+
+.selectedSpotCard:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.spotOrder {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    background-color: rgba(137, 68, 255, 0.8);
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    font-weight: bold;
+    z-index: 1;
+}
+
+.selectedSpotImage {
+    height: 80px;
+    width: 100%;
+    overflow: hidden;
+}
+
+.selectedImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.selectedSpotInfo {
+    padding: 8px;
+}
+
+.selectedSpotInfo h4 {
+    margin: 0;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: rgb(137, 68, 255);
+}
+
+.selectedSpotInfo p {
+    margin: 2px 0 0;
+    font-size: 11px;
+    color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.removeButton {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #ff6b6b;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    border: none;
+    cursor: pointer;
+    z-index: 1;
+    transition: all 0.2s;
+}
+
+.removeButton:hover {
+    background-color: #ff6b6b;
+    color: white;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 600px) {
+    .selectedSpotCard {
+        width: 100px;
+    }
+    
+    .selectedSpotImage {
+        height: 70px;
+    }
+    
+    .selectedSpotInfo h4 {
+        font-size: 12px;
+    }
+}
+
+
+
+
+
+
+
+.searchHeader {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    flex-direction: row;
+}
+
+.switchContainer {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+
+}
+  
+  .pageTitle {
+    font-size: 28px;
+    color: #333;
+    margin-right: 20px;
+  }
+  
+  .searchForm {
+    display: flex;
+    max-width: 600px;
+    min-width: 400px;
+  }
+  
+  .searchInput {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px 0 0 4px;
+    font-size: 16px;
+  }
+  
+  .searchButton {
+    background-color: #1976d2;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.2s;
+  }
+  
+  .searchButton:hover {
+    background-color: #1565c0;
+  }
+  
+  .resultInfo {
+    margin-bottom: 20px;
+    color: #666;
+  }
+  
+  .spotsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  
+  .spotCard {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+  }
+  
+  .spotCard:hover {
+    transform: translateY(-5px);
+  }
+  
+  .imageContainer {
+    height: 200px;
+    overflow: hidden;
+  }
+  
+  .spotImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+  }
+  
+  .spotCard:hover .spotImage {
+    transform: scale(1.05);
+  }
+  
+  .spotInfo {
+    padding: 15px;
+  }
+  
+  .spotName {
+    font-size: 18px;
+    margin: 0 0 5px;
+    color: #333;
+  }
+  
+  .spotPrefecture {
+    color: #1976d2;
+    font-weight: 500;
+    margin: 0 0 10px;
+    font-size: 14px;
+  }
+  
+  .spotDescription {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  .errorContainer {
+    padding: 20px;
+    background-color: #ffebee;
+    color: #c62828;
+    border-radius: 4px;
+    text-align: center;
+    margin: 20px 0;
+  }
+  
+  .noResults {
+    text-align: center;
+    padding: 40px 0;
+    color: #666;
+    font-size: 18px;
+  }
+  .paginationContainer {
+    margin-top: 30px;
+    padding-bottom: 20px;
+    display: flex;
+    justify-content: center;
+  }
+
+
+
+
+
+
+
+
+  .filterContainer {
+    display: flex;
+    align-items: center;
+    margin: 15px 0;
+    padding: 0 10px;
+  }
+  
+  .filterLabel {
+    font-weight: 500;
+    margin-right: 15px;
+    color: #444;
+  }
+  
+  .filterOptions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .filterButton {
+    padding: 6px 15px;
+    border: 1px solid rgba(137, 68, 255, 0.3);
+    border-radius: 20px;
+    background-color: white;
+    color: rgb(137, 68, 255);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .filterButton:hover {
+    background-color: rgba(137, 68, 255, 0.1);
+  }
+  
+  .activeFilter {
+    background-color: rgb(137, 68, 255);
+    color: white;
+    border-color: rgb(137, 68, 255);
+  }
+  
+  .activeFilter:hover {
+    background-color: rgb(117, 48, 235);
+  }
+
+
+
+  /* カードのコンテンツ部分 - クリック可能にする */
+.cardContent {
+    cursor: pointer;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 追加ボタンのスタイル */
+.addButton {
+    background-color: rgb(137, 68, 255);
+    color: white;
+    border: none;
+    padding: 10px;
+    margin: 0;
+    border-radius: 0 0 8px 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: background-color 0.3s;
+}
+
+.addButton:hover {
+    background-color: rgb(117, 48, 235);
+}
+
+
+
+
+.loadingContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    flex-grow: 1;
+}
+
+.spotListContainer {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+}

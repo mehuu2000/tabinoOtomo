@@ -1,0 +1,181 @@
+.popupOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(3px);
+}
+
+.popupContent {
+    background: white;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.popupCloseButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: white;
+    color: #333;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    transition: background-color 0.2s;
+}
+
+.popupCloseButton:hover {
+    background-color: #f0f0f0;
+}
+
+/* 追加：画像の外側ラッパー（余白用） */
+.popupImageWrapper {
+    background-color: white;
+    padding: 20px 20px 0 20px;
+}
+
+.popupImageContainer {
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+    position: relative;
+    border-radius: 8px; /* 画像の角を丸く */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 画像に軽い影 */
+}
+
+.popupImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+/* ホバー時の画像拡大効果 */
+.popupImageContainer:hover .popupImage {
+    transform: scale(1.03);
+}
+
+.popupInfo {
+    padding: 15px 20px 20px 20px;
+    overflow-y: auto;
+}
+
+.popupInfo h2 {
+    margin-top: 0;
+    color: rgb(137, 68, 255);
+    font-size: 24px;
+}
+
+.popupPrefecture {
+    color: #666;
+    margin-top: 0;
+    font-size: 14px;
+}
+
+.popupDescription {
+    line-height: 1.6;
+    margin: 15px 0;
+    color: #333;
+}
+
+/* 追加：最終更新日時のスタイル */
+.updateDate {
+    font-size: 12px;
+    color: #777;
+    text-align: right;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-style: italic;
+}
+
+.popupAddButton {
+    background-color: rgb(137, 68, 255);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 15px;
+    width: 100%;
+    transition: background-color 0.3s;
+}
+
+.popupAddButton:hover {
+    background-color: rgb(117, 48, 235);
+}
+
+/* スクロールバーのカスタマイズ */
+.popupInfo::-webkit-scrollbar {
+    width: 5px;
+}
+
+.popupInfo::-webkit-scrollbar-track {
+    background: rgba(137, 68, 255, 0.05);
+    border-radius: 3px;
+}
+
+.popupInfo::-webkit-scrollbar-thumb {
+    background-color: rgba(137, 68, 255, 0.3);
+    border-radius: 3px;
+}
+
+/* アニメーション */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* モバイル対応 */
+@media (max-width: 600px) {
+    .popupContent {
+        width: 95%;
+    }
+    
+    .popupImageWrapper {
+        padding: 15px 15px 0 15px;
+    }
+    
+    .popupImageContainer {
+        height: 200px;
+    }
+    
+    .popupInfo {
+        padding: 10px 15px 15px 15px;
+    }
+    
+    .popupInfo h2 {
+        font-size: 20px;
+    }
+    
+    .popupDescription {
+        font-size: 14px;
+    }
+}

@@ -45,3 +45,55 @@
     border-radius: 20px;
     margin-top: 30px;
 }
+
+/* make by AI */
+.destinationsContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin: 10px 0;
+  }
+  
+  .destinationField {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 5px 0;
+    width: 100%;
+  }
+  
+  .destinationLabel {
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+  
+  .addButtonContainer {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    color: rgb(179, 128, 226);
+    cursor: pointer;
+  }
+  
+  .addButtonContainer span {
+    margin-left: 5px;
+    font-size: 14px;
+    color: rgb(179, 128, 226);
+  }
+  
+  .removeButton {
+    color: #ff6b6b;
+    cursor: pointer;
+  }
+  
+  /* ボタンのホバー効果 */
+  .button:hover {
+    background-color: rgb(159, 108, 206);
+  }
+  
+  .button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }

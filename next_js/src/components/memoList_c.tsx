@@ -3,6 +3,7 @@ import styles from '../components/module_css/memoList_c.module.css'
 import MemoItem from './UI/memoItem'
 import { useApp } from '../app/TabinoOtomo/home/appContext';
 import { User as PrismaUser } from '@prisma/client';
+import Loading from './Loading';
 // import { useRouter } from 'next/navigation';
 
 
@@ -79,7 +80,7 @@ export default function MemoList_c({ currentUser }: MemoListProps) {
     if (loading) {
         return (
             <div className={styles.main}>
-                <p>Loading...☆☆☆</p>
+                <Loading />
             </div>
         )
     }
