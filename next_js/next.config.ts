@@ -11,7 +11,7 @@ const nextConfig = {
     serverActions: {},
   },
   images: {
-    domains: ['lh3.googleusercontent.com', 'res.cloudinary.com'],
+    domains: ['lh3.googleusercontent.com', 'res.cloudinary.com', 'yyjfaadcuvgnzapipczd.supabase.co'],
   },
   async headers() {
     return [

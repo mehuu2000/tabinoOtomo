@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/app/lib/prisma";
+import { Prisma } from "@prisma/client";
 
 export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
         const keyValue = searchParams.get("keyName");
+        const prefecture = searchParams.get("prefecture"); // 追加：都道府県フィルターパラメータ
         const page = parseInt(searchParams.get("page") || "1");
         const pageSize = 10; // 1ページあたりのスポット数
         const skip = (page - 1) * pageSize; // スポットのスキップ数
@@ -18,69 +20,57 @@ export async function GET(request: NextRequest) {
             updatedAt: true,
         };
 
-        let spots;
-        let totalCount = 0;
-
-        // keyValueがない場合は、全てのスポットを取得(20件ずつでページネーション)
-        if(!keyValue) {
-            totalCount = await prisma.spot.count();
-
-            spots = await prisma.spot.findMany({
-                take: pageSize,
-                skip: skip,
-                orderBy: {
-                    id: "asc",
-                },
-                select: selectFields,
-            })
-
-            return NextResponse.json({
-                spots: spots,
-                pagination: {
-                    total: totalCount,
-                    pageSize: pageSize,
-                    currentPage: page,
-                    totalPages: Math.ceil(totalCount / pageSize),
-                }
-            })
-        } else if(keyValue) {
-            // keyValueがある場合は、一致するスポットを取得
-            totalCount = await prisma.spot.count({
-                where: {
-                    OR: [
-                        { name: { contains: keyValue } },
-                        { prectures: { contains: keyValue } },
-                    ]
-                }
-            });
-
-            spots = await prisma.spot.findMany({
-                where: {
-                    OR: [
-                        { name: { contains: keyValue } },
-                        { prectures: { contains: keyValue } },
-                    ]
-                },
-                take: pageSize,
-                skip: skip,
-                orderBy: {
-                    id: "asc",
-                },
-                select: selectFields,
-            });
-
-            return NextResponse.json({
-                spots: spots,
-                pagination: {
-                    total: totalCount,
-                    pageSize: pageSize,
-                    currentPage: page,
-                    totalPages: Math.ceil(totalCount / pageSize),
-                },
-            })
-        } else {
-            return NextResponse.json({ message : "スポットが見つかりませんでした" }, { status: 404 });
+        let whereCondition: Prisma.SpotWhereInput = {};
+        
+        // キーワード検索条件
+        if(keyValue) {
+            whereCondition.OR = [
+                { name: { contains: keyValue } },
+                { prectures: { contains: keyValue } },
+            ];
         }
+        
+        // 都道府県フィルター条件
+        if(prefecture && prefecture !== "all") {
+            if(whereCondition.OR) {
+                // キーワード検索とフィルターを併用する場合
+                whereCondition = {
+                    AND: [
+                        { prectures: prefecture },
+                        { OR: whereCondition.OR }
+                    ]
+                };
+            } else {
+                // フィルターのみの場合
+                whereCondition.prectures = prefecture;
+            }
+        }
+        
+        // 条件に一致するスポット数を取得
+        const totalCount = await prisma.spot.count({
+            where: whereCondition
+        });
+
+        // スポットの取得
+        const spots = await prisma.spot.findMany({
+            where: whereCondition,
+            take: pageSize,
+            skip: skip,
+            orderBy: {
+                id: "asc",
+            },
+            select: selectFields,
+        });
+
+        return NextResponse.json({
+            spots: spots,
+            pagination: {
+                total: totalCount,
+                pageSize: pageSize,
+                currentPage: page,
+                totalPages: Math.ceil(totalCount / pageSize),
+            }
+        });
     } catch (error) {
         console.error("スポット取得中にエラーが発生しました:", error);
         return NextResponse.json({ 

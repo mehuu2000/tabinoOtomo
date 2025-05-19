@@ -103,6 +103,8 @@ model Plan {
   isPublic     Boolean  @default(false) // 公開フラグ
   createAt     DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  favorite  Boolean?  @default(false)
+  visited   Boolean?  @default(false)
 
   spots PlanItem[] // 旅行先
   user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)

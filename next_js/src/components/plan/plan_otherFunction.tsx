@@ -11,14 +11,14 @@ import Button from '@mui/material/Button';
 import TryIcon from '@mui/icons-material/Try';
 import AddIcon from '@mui/icons-material/Add';
 import { useRouter } from 'next/navigation';
-import { useApp } from '../../app/TabinoOtomo/home/appContext';
+// import { useApp } from '../../app/TabinoOtomo/home/appContext';
 
 interface OtherFuncProps {
     choose: boolean;
     selectChoose: () => void;
-    SelectFounction: (func: string, plans: string[]) => void;
-    selectedItems: string[];
-    setSelectedItems: React.Dispatch<React.SetStateAction<string[]>>;
+    SelectFounction: (func: string, plans: number[]) => void;
+    selectedItems: number[];
+    setSelectedItems: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
 
@@ -30,7 +30,7 @@ export default function OtherFunc_u({choose, selectChoose, SelectFounction, sele
         router.push('/TabinoOtomo/home/createSelect');
     };
 
-    const handleFounction = (func: string, plans: string[]) => {
+    const handleFounction = (func: string, plans: number[]) => {
         if(selectedItems.length != 0) {
             SelectFounction(func, plans)
             router.refresh()
