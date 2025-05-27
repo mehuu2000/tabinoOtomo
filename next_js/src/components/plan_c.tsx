@@ -176,7 +176,7 @@ export default function Plan_c() {
         return;
       }
       try {
-        const response = await fetch('/api/deleteSpot', {
+        const response = await fetch('/api/deletePlan', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
