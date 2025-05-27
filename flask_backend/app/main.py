@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import os
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 load_dotenv()
 
@@ -155,6 +155,89 @@ def make_image():
         print(f"画像生成中にエラーが発生しました: {str(e)}")
         print(traceback.format_exc())
         return {'error': f'画像生成処理でエラーが発生しました: {str(e)}'}, 500
+    
+    
+@app.route('/aiSearchRank', methods=['POST'])
+def ai_search_rank():
+    print("AI検索・ランキングの処理を受け付けました")
+    
+    data = request.json
+    spots = data.get('spots', [])
+    query = data.get('query', '')
+    
+    if not query or not spots:
+        return {'error': '検索クエリまたはスポット情報がありません', 'rankedIds': []}, 400
+    
+    print(f"検索クエリ: {query}")
+    print(f"ランキング対象スポット: {len(spots)}件")
+    
+    # スポットIDと名前のマッピングを保存（デバッグ用）
+    spot_names = {spot['id']: spot['name'] for spot in spots}
+    
+    # SSH接続してFastAPIの一括処理エンドポイントを呼び出す
+    try:
+        # SSH接続を確立
+        ssh_client = paramiko.SSHClient()
+        ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh_client.connect(ssh_host, port=ssh_port, username=ssh_username, key_filename=ssh_key_path)
+        
+        # JSONデータを直接指定
+        json_data = json.dumps({
+            "spots": spots,
+            "query": query
+        }, ensure_ascii=False)
+        
+        # エスケープ処理を行う（特に引用符）
+        escaped_json = json_data.replace('"', '\\"')
+        
+        # FastAPIにリクエストを送るコマンド（JSONを直接指定）
+        command = f'curl -X POST http://127.0.0.1:8000/ai_search_rank -H "Content-Type: application/json" -d "{escaped_json}"'
+        
+        stdin, stdout, stderr = ssh_client.exec_command(command)
+        result = stdout.read().decode('utf-8')
+        error = stderr.read().decode('utf-8')
+        
+        print("FastAPIからの応答受信")
+        
+        if error:
+            print("エラー出力:")
+            print(error)
+        
+        # SSH接続を閉じる
+        ssh_client.close()
+        
+        try:
+            # FastAPIのレスポンスをJSONとしてパース
+            fastapi_response = json.loads(result)
+            
+            if 'rankedIds' in fastapi_response:
+                ranked_ids = fastapi_response['rankedIds']
+                print("\n===== ランキング結果の詳細 =====")
+                print(f"検索クエリ: 「{query}」")
+                print(f"ランキング結果件数: {len(ranked_ids)}件")
+                print("-" * 50)
+                
+                # 上位20件のランキング結果を表示
+                for i, spot_id in enumerate(ranked_ids[:20]):
+                    spot_name = spot_names.get(spot_id, "不明なスポット")
+                    print(f"{i+1}位: ID={spot_id}, 名前={spot_name}")
+                
+                if len(ranked_ids) > 20:
+                    print(f"...他 {len(ranked_ids)-20} 件")
+                print("=" * 50)
+            
+            return fastapi_response, 200
+            
+        except json.JSONDecodeError as json_err:
+            print(f"FastAPIからのレスポンスのJSONパースに失敗: {json_err}")
+            print(f"受信したレスポンス: {result}")
+            return {'error': 'AI検索結果の解析に失敗しました', 'rankedIds': []}, 500
+    
+    except Exception as e:
+        import traceback
+        print(f"AI検索でエラーが発生しました: {e}")
+        print(traceback.format_exc())  # スタックトレースを出力
+        return {'error': f'AI検索処理に失敗しました: {str(e)}', 'rankedIds': []}, 500
 
 if __name__ == '__main__':
     app.debug = True
