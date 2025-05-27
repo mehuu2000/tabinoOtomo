@@ -581,3 +581,67 @@
     overflow: hidden;
     position: relative;
 }
+
+
+
+
+
+
+/* 選択モード関連のスタイルを修正 */
+.chooseMode {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* 選択されたカードのスタイル */
+.selected {
+    border: 2px solid #8944FF !important; /* テーマカラーの境界線 */
+    box-shadow: 0 0 15px rgba(137, 68, 255, 0.3) !important; /* 紫色の柔らかい影 */
+    position: relative;
+}
+
+/* 選択されたカードに疑似要素で外側の薄いボーダーを追加 */
+.selected::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border: 1px solid rgba(137, 68, 255, 0.3); /* 薄い紫色の外側ボーダー */
+    border-radius: 14px; /* カードのborder-radiusより少し大きく */
+    pointer-events: none; /* マウスイベントに反応しないように */
+    z-index: 1;
+}
+
+/* プランカードの基本スタイル */
+.planCard {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #eaeaea;
+}
+
+/* ホバー時のスタイル */
+.planCard:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
+/* 選択されたカードのホバー時 */
+.selected:hover {
+    border-color: #8944FF !important;
+    box-shadow: 0 0 20px rgba(137, 68, 255, 0.4) !important;
+}
+
+/* 選択モード時のカードホバー効果 */
+.chooseMode:hover {
+    border-color: rgba(137, 68, 255, 0.4);
+    box-shadow: 0 4px 12px rgba(137, 68, 255, 0.15);
+}

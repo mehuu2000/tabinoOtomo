@@ -14,9 +14,12 @@ interface PlansProps {
     plans: Plan[];
     setPlans: React.Dispatch<React.SetStateAction<Plan[]>>;
     isLoading: boolean;
+    choose?: boolean; // 選択モードかどうか（省略可能）
+    selectedItems?: number[]; // 選択されたアイテムのID配列（省略可能）
+    setSelectedItems?: React.Dispatch<React.SetStateAction<number[]>>; // アイテム選択の状態設定関数（省略可能）
 }
 
-export default function Plans({plans, setPlans, isLoading}: PlansProps) {
+export default function Plans({plans, setPlans, isLoading, choose = false, selectedItems = [], setSelectedItems}: PlansProps) {
     // カード毎のスライダーインデックス状態を管理
     const [sliderIndices, setSliderIndices] = useState<Record<number, number>>({});
     // ホバー中のカードIDを管理
@@ -50,6 +53,28 @@ export default function Plans({plans, setPlans, isLoading}: PlansProps) {
             year: 'numeric',
             month: '2-digit',
             day: '2-digit'
+        });
+    };
+
+    // カードの選択切り替え関数
+    const handleCardSelect = (planId: number, e: React.MouseEvent) => {
+        // 選択モードがオフの場合は何もしない
+        if (!choose || !setSelectedItems) return;
+        
+        // 「詳細を見る」ボタンがクリックされた場合は選択処理をスキップ
+        if ((e.target as Element).closest(`.${styles.detailButton}`)) {
+            return;
+        }
+        
+        // 選択状態の切り替え
+        setSelectedItems(prevSelected => {
+            if (prevSelected.includes(planId)) {
+                // すでに選択されていれば解除
+                return prevSelected.filter(id => id !== planId);
+            } else {
+                // 選択されていなければ追加
+                return [...prevSelected, planId];
+            }
         });
     };
 
@@ -199,13 +224,15 @@ export default function Plans({plans, setPlans, isLoading}: PlansProps) {
                             const currentSpotIndex = sliderIndices[plan.id] || 0;
                             const currentSpot = hasSpots ? plan.spots[currentSpotIndex].spot : null;
                             const isAnimating = animating[plan.id] || false;
+                            const isSelected = selectedItems.includes(plan.id);
                             
                             return (
                                 <div 
                                     key={plan.id} 
-                                    className={styles.planCard}
+                                    className={`${styles.planCard} ${choose ? styles.chooseMode : ''} ${isSelected ? styles.selected : ''}`}
                                     onMouseEnter={() => handleMouseEnter(plan.id, plan.spots?.length || 0)}
                                     onMouseLeave={() => handleMouseLeave(plan.id)}
+                                    onClick={(e) => handleCardSelect(plan.id, e)}
                                 >
                                     {/* スポット画像をヘッダーとして表示 */}
                                     <div className={styles.imageHeader}>
@@ -253,7 +280,7 @@ export default function Plans({plans, setPlans, isLoading}: PlansProps) {
                                         </div>
                                     </div>
                                     
-                                    {/* プラン詳細（変更なし） */}
+                                    {/* プラン詳細） */}
                                     <div className={styles.planContent}>
                                         <h3 className={styles.planTitle}>{plan.title}</h3>
                                         

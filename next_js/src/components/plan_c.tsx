@@ -110,89 +110,96 @@ export default function Plan_c() {
     const FavoritElements = async (selectedItems: number[]): Promise<void> => {
         //お気に入り登録
         try {
-          const response = await fetch('/api/updatePlanFavorite', {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ selectedItems }),
-          });
+            const response = await fetch('/api/updatePlanFavorite', {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ selectedItems }),
+            });
       
-          const result = await response.json();
+            const result = await response.json();
       
-          if (response.ok) {
-            console.log(result.message);
-            // Memoの状態を更新
-            setPlans((prevPlans) =>
-                prevPlans.map((plan) =>
-                    selectedItems.includes(plan.id)
-                        ? { ...plan, favorite: !plan.favorite } // favoriteを更新
-                        : plan
-                )
-            );
-        } else {
-            console.error(result.message);
-          }
+            if (response.ok) {
+              console.log(result.message);
+              // Memoの状態を更新
+              setPlans((prevPlans) =>
+                  prevPlans.map((plan) =>
+                      selectedItems.includes(plan.id)
+                          ? { ...plan, favorite: !plan.favorite } // favoriteを更新
+                          : plan
+                  )
+              );
+            } else {
+              console.error(result.message);
+            }
         } catch (error) {
           console.error('お気に入り登録エラー:', error);
         }
+    }
+
+    const FinelEments = async (selectedItems: number[]): Promise<void> => {
+      //完了処理
+      try {
+        const response = await fetch('/api/updatePlanVisited', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ selectedItems }),
+        });
+    
+        const result = await response.json();
+    
+        if (response.ok) {
+          console.log(result.message);
+          // Memoの状態を更新
+          setPlans((prevPlans) =>
+              prevPlans.map((plan) =>
+                  selectedItems.includes(plan.id)
+                      ? { ...plan, visited: !plan.visited } // visitedを更新
+                      : plan
+              )
+          );
+      } else {
+          console.error(result.message);
+        }
+      } catch (error) {
+        console.error('完了登録エラー:', error);
       }
-      const FinelEments = async (selectedItems: number[]): Promise<void> => {
-        //完了処理
-        try {
-          const response = await fetch('/api/updatePlanVisited', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ selectedItems }),
-          });
-      
-          const result = await response.json();
-      
-          if (response.ok) {
-            console.log(result.message);
-            // Memoの状態を更新
-            setPlans((prevPlans) =>
-                prevPlans.map((plan) =>
-                    selectedItems.includes(plan.id)
-                        ? { ...plan, visited: !plan.visited } // visitedを更新
-                        : plan
-                )
-            );
+    }
+
+    const DeleteElements = async (selectedItems: number[]): Promise<void> => {
+      //メモ削除
+      const isConfirmed = window.confirm(`選択した${selectedItems.length}件のプランを削除しますか？\nこの操作は取り消せません。`);
+      if (!isConfirmed) {
+        return;
+      }
+      try {
+        const response = await fetch('/api/deleteSpot', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ selectedItems }),
+        });
+  
+        const result = await response.json();
+  
+        if (response.ok) {
+          console.log(result.message);
+          // クライアント側の状態を更新
+          setPlans((prevPlans) =>
+            prevPlans.filter((plan) => !selectedItems.includes(plan.id))
+          );
         } else {
-            console.error(result.message);
-          }
-        } catch (error) {
-          console.error('完了登録エラー:', error);
+          console.error(result.message);
         }
+      } catch (error) {
+        console.error('削除エラー:', error);
       }
-      const DeleteElements = async (selectedItems: number[]): Promise<void> => {
-        //メモ削除
-        try {
-          const response = await fetch('/api/deleteSpot', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ selectedItems }),
-          });
-    
-          const result = await response.json();
-    
-          if (response.ok) {
-            console.log(result.message);
-            // クライアント側の状態を更新
-            setPlans((prevPlans) =>
-              prevPlans.filter((plan) => !selectedItems.includes(plan.id))
-            );
-          } else {
-            console.error(result.message);
-          }
-        } catch (error) {
-          console.error('削除エラー:', error);
-        }
     };
+
     const ChatElements = (selectedItems: number[]): void => {
         //チャット処理
     }
@@ -204,8 +211,23 @@ export default function Plan_c() {
 
     return(
         <div className={styles_c.main}>
-            <Plans plans={plans} setPlans={setPlans} isLoading={isLoading}/>
-            <OtherFunc_u choose={choose} selectChoose={selectChoose} SelectFounction={SelectFounction} selectedItems={selectedItems} setSelectedItems={setSelectedItems}/>
+            <div className={styles_c.main}>
+        <Plans 
+            plans={plans} 
+            setPlans={setPlans} 
+            isLoading={isLoading}
+            choose={choose}
+            selectedItems={selectedItems}
+            setSelectedItems={setSelectedItems}
+        />
+        <OtherFunc_u 
+            choose={choose} 
+            selectChoose={selectChoose} 
+            SelectFounction={SelectFounction} 
+            selectedItems={selectedItems} 
+            setSelectedItems={setSelectedItems}
+        />
+    </div>
         </div>
     )
 
