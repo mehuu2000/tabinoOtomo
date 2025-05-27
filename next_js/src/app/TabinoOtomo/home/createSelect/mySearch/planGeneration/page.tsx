@@ -17,7 +17,7 @@ import FmdBadIcon from '@mui/icons-material/FmdBad';
 // material-uis
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
-import { Router } from 'next/router';
+import Switch from '@mui/material/Switch';
 
 interface SpotData {
     spots: Spot[],
@@ -61,6 +61,7 @@ export default function PlanGeneration() {
 
     const [activeFilter, setActiveFilter] = useState<string>("all");
     const [selectedSpotForPopup, setSelectedSpotForPopup] = useState<Spot | null>(null);
+    const [isSwitch, setIsSwitch] = useState<boolean>(false);
     const router = useRouter();
 
     // スポットデータの取得
@@ -79,12 +80,18 @@ export default function PlanGeneration() {
         setError(null);
 
         try {
-            let url = `/api/getSpots?page=${page}`
-            if(keyword) {
-                url += `&keyName=${encodeURIComponent(keyword)}`;
-            }
-            if(prefecture && prefecture !== "all") {
-                url += `&prefecture=${encodeURIComponent(prefecture)}`;
+            let url = ``
+            if(isSwitch && keyword) {
+                url = `/api/aiSearch?query=${encodeURIComponent(keyword)}`;
+                console.log("AI検索モードでリクエスト:", url);
+            } else {
+                url = `/api/getSpots?page=${page}`;
+                if(keyword) {
+                    url += `&keyName=${encodeURIComponent(keyword)}`;
+                }
+                if(prefecture && prefecture !== "all") {
+                    url += `&prefecture=${encodeURIComponent(prefecture)}`;
+                }
             }
 
             const response = await fetch(url);
@@ -106,6 +113,13 @@ export default function PlanGeneration() {
             setIsLoading(false);
         }
     };
+
+    // AI提案のスイッチ変更ハンドラ
+    const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setIsSwitch(event.target.checked);
+        // AI提案の処理をここに追加
+        console.log("AI提案:", event.target.checked);
+    }
 
     // 検索実行
     const handleSearch = (e: React.FormEvent) => {
@@ -403,7 +417,7 @@ export default function PlanGeneration() {
                                     type="text"
                                     value={searchInput}
                                     onChange={(e) => setSearchInput(e.target.value)}
-                                    placeholder="スポット名や都道府県名で検索"
+                                    placeholder={isSwitch ? "どんな旅行先をお探しですか？" : "スポット名や都道府県名で検索"}
                                     className={styles.searchInput}
                                 />
                                 <button type="submit" className={styles.searchButton}>検索</button>
@@ -416,6 +430,12 @@ export default function PlanGeneration() {
                             ) : (
                                 <p>全{spotData?.pagination.total}件のスポット</p>
                             )}
+                        </div>
+                        {/* ここのスイッチとpタグは横並びにする */}
+                        <div className="flex items-center">
+                            <p>AI提案</p>
+                            <Switch onChange={handleSwitchChange} value={isSwitch}/>
+                            {isSwitch && <p className="text-red-500 ml-2.5">検索に時間がかかります</p>}
                         </div>
                         {/* フィルター */}
                         <div className={styles.filterContainer}>

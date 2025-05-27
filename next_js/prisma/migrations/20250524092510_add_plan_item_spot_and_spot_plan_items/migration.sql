@@ -1,0 +1,2 @@
+-- AddForeignKey
+ALTER TABLE "PlanItem" ADD CONSTRAINT "PlanItem_spotId_fkey" FOREIGN KEY ("spotId") REFERENCES "Spot"("id") ON DELETE CASCADE ON UPDATE CASCADE;

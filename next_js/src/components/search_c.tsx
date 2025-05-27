@@ -54,10 +54,18 @@ export default function Plan_c() {
 
         try {
             let url = `/api/getSpots?page=${page}`
-            if(keyword) {
-                url += `&keyName=${keyword}`;
+            if(isSwitch && keyword) {
+                url = `/api/aiSearch?query=${encodeURIComponent(keyword)}`;
+                console.log("AI検索モードでリクエスト:", url);
+            } else {
+                // 通常の検索モード
+                url = `/api/getSpots?page=${page}`;
+                if (keyword) {
+                    url += `&keyName=${encodeURIComponent(keyword)}`;
+                }
             }
-
+            
+            console.log("検索リクエスト:", url);
             const response = await fetch(url);
 
             if(!response.ok) {

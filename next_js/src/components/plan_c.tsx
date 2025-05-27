@@ -4,24 +4,87 @@ import React from 'react'
 import styles_c from './module_css/plan_c.module.css'
 import OtherFunc_u from '../components/plan/plan_otherFunction';
 import Plans from './plan/plans';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-type Plan = {
-    id: number;
-    title: string;
-    days: number; // 旅行日数
-    fromWhen: number; // 旅行開始日
-    conectMemoId: string | null; // メモへの参照
-    isPublic: boolean; // 公開フラグ
-    favorite: boolean; // お気に入りフラグ
-    visited: boolean; // 完了フラグ
-    createAt: Date;
+
+export interface Plan {
+  id: number;
+  title: string;
+  days: number;
+  fromWhen: number;
+  conectMemoId: string | null;
+  isPublic: boolean;
+  favorite: boolean;
+  visited: boolean;
+  createAt: string | Date; // 文字列またはDate型を許容
+  spots: PlanItem[];
+}
+
+export interface PlanItem {
+  id: number;
+  spotId: number;
+  planId: number;
+  day: number;
+  order: number;
+  spot: Spot;
+}
+
+export interface Spot {
+  id: number;
+  prectures: string;
+  name: string;
+  description: string;
+  imageUrl: string;
+  updatedAt: string | Date;
+  createdAt: string | Date;
 }
 
 export default function Plan_c() {
     const [choose, setChoose] = useState<boolean>(false);
     const [selectedItems, setSelectedItems] = useState<number[]>([]);
     const [plans, setPlans] = useState<Plan[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    // plansのデバック
+    useEffect(() => {
+        console.log("現在のプラン:", plans);
+    }, [plans]);
+
+    const fetchPlans = async () => {
+        setIsLoading(true);
+        try {
+            const response = await fetch ('/api/planApi', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            if (!response.ok) {
+                throw new Error('Failed to fetch plans');
+            }
+            const responseData = await response.json();
+            if (responseData.data && Array.isArray(responseData.data)) {
+                // Date型への変換処理を追加
+                const formattedPlans = responseData.data.map((plan: Plan) => ({
+                    ...plan,
+                    // 文字列の日付をDate型に変換
+                    createAt: new Date(plan.createAt)
+                }));
+                setPlans(formattedPlans);
+            } else {
+                console.error('予期しないデータ形式:', responseData);
+                setPlans([]);
+            }
+        } catch (error) {
+            console.error('プランの取得に失敗しました:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        fetchPlans();
+    }, []);
 
     const SelectFounction = (func: string, selectedItems: number[]): void => {
         switch (func) {
@@ -47,8 +110,8 @@ export default function Plan_c() {
     const FavoritElements = async (selectedItems: number[]): Promise<void> => {
         //お気に入り登録
         try {
-          const response = await fetch('/api/updateMemoFavorite', {
-            method: 'POST',
+          const response = await fetch('/api/updatePlanFavorite', {
+            method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
             },
@@ -77,7 +140,7 @@ export default function Plan_c() {
       const FinelEments = async (selectedItems: number[]): Promise<void> => {
         //完了処理
         try {
-          const response = await fetch('/api/updateMemoVisited', {
+          const response = await fetch('/api/updatePlanVisited', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -107,7 +170,7 @@ export default function Plan_c() {
       const DeleteElements = async (selectedItems: number[]): Promise<void> => {
         //メモ削除
         try {
-          const response = await fetch('/api/deleteMemo', {
+          const response = await fetch('/api/deleteSpot', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -141,7 +204,7 @@ export default function Plan_c() {
 
     return(
         <div className={styles_c.main}>
-            <Plans plans={plans} setPlans={setPlans}/>
+            <Plans plans={plans} setPlans={setPlans} isLoading={isLoading}/>
             <OtherFunc_u choose={choose} selectChoose={selectChoose} SelectFounction={SelectFounction} selectedItems={selectedItems} setSelectedItems={setSelectedItems}/>
         </div>
     )

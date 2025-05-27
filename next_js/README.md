@@ -51,3 +51,6 @@ venv起動は
 
 FastAPI起動は
 ```python main.py```
+
+DeepSeek起動
+```./build/bin/llama-server -m models/DeepSeek-R1-Distill-Qwen-14B-Q4_K_M-00001-of-00001.gguf --port 8080 -ngl 49 --numa distribute```

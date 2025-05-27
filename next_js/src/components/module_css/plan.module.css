@@ -2,8 +2,582 @@
     height: calc(100vh - 90px);
     width: 80%;
     display: flex;
-    justify-content: center;
+    justify-content: start;
     align-items: center;
     flex-direction: column;
     border-right: 1px solid black;
+    padding: 16px;
+    overflow-y: auto;
+}
+
+.loadingContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+  }
+  
+  .plansContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+    width: 100%;
+  }
+  /*修正*/
+  .planCard {
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background-color: #ffffff;
+    /* 高さ指定を削除し、コンテンツに合わせるようにする */
+    min-height: fit-content;
+  }
+  
+  .planCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  }
+  
+  .imageHeader {
+    position: relative;
+    /* 高さを調整して正方形から長方形に */
+    height: 180px;
+    overflow: hidden;
+  }
+  
+  .spotImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  
+  .planCard:hover .spotImage {
+    transform: scale(1.05);
+  }
+  
+  .noImage {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f5f5f5;
+    color: #757575;
+    font-size: 0.9rem;
+  }
+  
+  .statusIcons {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 8px;
+  }
+  
+  .favoriteIcon, .visitedIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  }
+  
+  .favoriteIcon {
+    color: #ffc107; /* 星のアイコンのカラー */
+  }
+  
+  .visitedIcon {
+    color: #4caf50; /* チェックアイコンのカラー */
+  }
+  
+  .planContent {
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    /* 固定の高さではなく、コンテンツに合わせる */
+    height: auto;
+    gap: 10px;
+  }
+  
+  .planTitle {
+    margin: 0 0 8px 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333333;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .planInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+    /* flex-growを削除して必要な高さのみ使用 */
+  }
+  
+  .infoRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    color: #555555;
+  }
+  
+  .infoIcon {
+    color: #757575;
+    font-size: 1.1rem;
+  }
+  
+  .planActions {
+    /* margin-topをautoからより小さな値に変更 */
+    margin-top: 8px;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .detailButton {
+    background-color: #1976d2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .detailButton:hover {
+    background-color: #1565c0;
+  }
+  
+  .emptyState {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 24px;
+    text-align: center;
+    color: #757575;
+  }
+  
+  /* レスポンシブ対応 */
+  @media (max-width: 768px) {
+    .plansContainer {
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .plansContainer {
+      grid-template-columns: 1fr;
+    }
+    
+    .imageHeader {
+      /* モバイルではさらに低く */
+      height: 150px;
+    }
+  }
+
+
+  .imageSlider {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* はみ出る部分を隠す */
+  }
+  
+  /* アニメーションを変更 - フェードからスライドへ */
+  @keyframes slideInRight {
+    from { 
+      transform: translateX(100%);
+      opacity: 0; 
+    }
+    to { 
+      transform: translateX(0);
+      opacity: 1; 
+    }
+  }
+  
+  @keyframes slideOutLeft {
+    from { 
+      transform: translateX(0);
+      opacity: 1; 
+    }
+    to { 
+      transform: translateX(-100%);
+      opacity: 0; 
+    }
+  }
+  
+
+
+  
+  .imageSlider {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* はみ出る部分を隠す */
+  }
+  
+  /* スライドアニメーション */
+  @keyframes slideInRight {
+    from { 
+      transform: translateX(100%);
+      opacity: 0; 
+    }
+    to { 
+      transform: translateX(0);
+      opacity: 1; 
+    }
+  }
+  
+  @keyframes slideOutLeft {
+    from { 
+      transform: translateX(0);
+      opacity: 1; 
+    }
+    to { 
+      transform: translateX(-100%);
+      opacity: 0; 
+    }
+  }
+  
+  /* スポット画像のスタイル */
+  .spotImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    animation: slideInRight 0.6s ease forwards;
+  }
+  
+  .animating {
+    animation: slideOutLeft 0.6s ease forwards;
+  }
+  
+  /* スライドインジケーター */
+  .sliderIndicator {
+    position: absolute;
+    bottom: 12px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    z-index: 2;
+    padding: 4px 8px;
+    border-radius: 12px;
+    background-color: rgba(0, 0, 0, 0.2);
+    width: fit-content;
+    margin: 0 auto;
+  }
+  
+  .indicatorDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.6);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .activeDot {
+    background-color: #ffffff;
+    transform: scale(1.3);
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+  }
+
+
+
+
+
+/* モーダル関連のスタイル - オーバーレイを灰色に戻す */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6); /* 灰色の半透明オーバーレイに戻す */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* 他のモーダル関連スタイルはそのまま紫色テーマを維持 */
+.modalContent {
+    background-color: #fff;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 24px rgba(137, 68, 255, 0.2); /* 紫色の影はそのまま */
+    padding: 24px;
+    position: relative;
+    border: 1px solid rgba(137, 68, 255, 0.1); /* 薄い紫色のボーダー */
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid rgba(137, 68, 255, 0.2); /* 薄い紫色のボーダー */
+}
+
+.modalHeader h2 {
+    margin: 0;
+    font-size: 1.6rem;
+    color: #6933CC; /* 濃い目の紫色 */
+    font-weight: 700;
+}
+
+.closeButton {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    color: #A980FF; /* 明るい紫色 */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.closeButton:hover {
+    background-color: rgba(137, 68, 255, 0.1); /* 薄い紫色の背景 */
+    color: #8944FF; /* テーマカラー */
+    transform: rotate(90deg);
+}
+
+.modalInfo {
+    margin-bottom: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    background-color: rgba(137, 68, 255, 0.05); /* 非常に薄い紫色の背景 */
+    padding: 16px;
+    border-radius: 8px;
+}
+
+.infoRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.infoIcon {
+    color: #8944FF; /* テーマカラー */
+}
+
+.modalBody {
+    padding-top: 16px;
+}
+
+.daysContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.daySection {
+    border: 1px solid rgba(137, 68, 255, 0.2); /* 薄い紫色のボーダー */
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(137, 68, 255, 0.1); /* 薄い紫色の影 */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.daySection:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(137, 68, 255, 0.15); /* より濃い紫色の影 */
+}
+
+.dayTitle {
+    background: linear-gradient(to right, #A980FF, #8944FF); /* 紫色のグラデーション */
+    margin: 0;
+    padding: 14px 20px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: white;
+    border-bottom: none;
+}
+
+.daySpots {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background-color: #fefeff; /* ごく薄い紫色のニュアンス */
+}
+
+.spotCard {
+    display: flex;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.2s ease;
+    border: 1px solid rgba(137, 68, 255, 0.1); /* 薄い紫色のボーダー */
+}
+
+.spotCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(137, 68, 255, 0.15); /* 紫色の影 */
+}
+
+.spotOrder {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: rgba(137, 68, 255, 0.85); /* 半透明の紫色 */
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.spotImageContainer {
+    width: 150px;
+    height: 100px;
+    overflow: hidden;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.spotThumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.spotCard:hover .spotThumbnail {
+    transform: scale(1.05);
+}
+
+.spotInfo {
+    padding: 16px 20px;
+    flex-grow: 1;
+}
+
+.spotName {
+    margin: 0 0 6px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #444;
+}
+
+.spotPrefecture {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #777;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.spotPrefecture:before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #A980FF; /* 明るい紫色 */
+}
+
+.noSpots {
+    text-align: center;
+    padding: 40px;
+    color: #888;
+    font-style: italic;
+    background-color: rgba(137, 68, 255, 0.05); /* 非常に薄い紫色の背景 */
+    border-radius: 8px;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 600px) {
+    .modalContent {
+        width: 95%;
+        padding: 16px;
+    }
+    
+    .spotCard {
+        flex-direction: column;
+    }
+    
+    .spotImageContainer {
+        width: 100%;
+        height: 140px;
+    }
+    
+    .spotInfo {
+        padding: 16px;
+    }
+    
+    .spotDescription {
+        -webkit-line-clamp: 4; /* モバイルではもう少し行数を増やす */
+    }
+    
+    .modalInfo {
+        flex-direction: column;
+        gap: 12px;
+    }
+}
+
+/* 「詳細を見る」ボタンも紫色テーマに合わせる */
+.detailButton {
+    background-color: #8944FF; /* テーマカラー */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.detailButton:hover {
+    background-color: #7533FF; /* 少し暗い紫色 */
+    box-shadow: 0 2px 8px rgba(137, 68, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+/* 追加する説明文のスタイル */
+.spotDescription {
+    margin: 8px 0 0 0;
+    font-size: 0.85rem;
+    color: #555;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    position: relative;
 }
