@@ -91,6 +91,8 @@ model Spot {
   imageUrl    String // スポットの画像URL
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  planItems PlanItem[]
 }
 
 model Plan {
@@ -118,6 +120,7 @@ model PlanItem {
   order  Int // 何日目のうちの何番目
 
   plan Plan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  spot Spot @relation(fields: [spotId], references: [id], onDelete: Cascade)
 }
 
 // model ApiCount {

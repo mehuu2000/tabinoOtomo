@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "jotai": "^2.12.4",
     "prisma": "^5.22.0"
   }
 }

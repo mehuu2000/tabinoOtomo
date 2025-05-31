@@ -27,7 +27,7 @@ export default function OtherFunc_u({choose, selectChoose, SelectFounction, sele
     const router = useRouter();
 
     const handleClick = () => {
-        router.push('/TabinoOtomo/home/createSelect');
+        router.push('/TabinoOtomo/home/createSelect/mySearch/newCreatePlan');
     };
 
     const handleFounction = (func: string, plans: number[]) => {

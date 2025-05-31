@@ -87,3 +87,45 @@ export async function POST(request: NextRequest) {
           );
     }
 }
+
+export async function GET(): Promise<NextResponse> {
+    try {
+        const session = await getServerSession(authOptions);
+
+        if(!session || !session.user) {
+            return NextResponse.json(
+                {message: "ログインしてください"},
+                {status: 401}
+            );
+        }
+
+        const userId = session.user.id;
+
+        const plans = await prisma.plan.findMany({
+            where: {
+                userId: userId,
+            },
+            include: {
+                spots: {
+                    include: {
+                        spot: true,
+                    }
+                }
+            },
+            orderBy: {
+                createAt: 'desc',
+            },
+        });
+
+        return NextResponse.json(
+            { data: plans },
+            { status: 200 }
+        );
+    } catch (error) {
+        console.error("プラン取得中のエラー:", error);
+        return NextResponse.json(
+            { error: 'プランの取得中にエラーが発生しました' },
+            { status: 500 }
+        );
+    }
+}

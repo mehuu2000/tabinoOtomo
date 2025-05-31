@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import getCurrentUser from '@/app/actions/getCurentUser';
 
 // GET メソッドに対応するエクスポート
-export const GET = async (req: NextRequest) => {
+export const GET = async () => {
   try {
     const currentUser = await getCurrentUser();
     console.log(`取得したもの：${JSON.stringify(currentUser)}`); // オブジェクトをJSONとして表示
