@@ -238,6 +238,75 @@ def ai_search_rank():
         print(f"AI検索でエラーが発生しました: {e}")
         print(traceback.format_exc())  # スタックトレースを出力
         return {'error': f'AI検索処理に失敗しました: {str(e)}', 'rankedIds': []}, 500
+    
+    
+@app.route('/chatAi', methods=['POST'])
+def chat_ai():
+    print("AIチャットの処理を受け付けました")
+    
+    data = request.json
+    message = data.get('message', '')
+    previous_messages = data.get('previousMessages', [])
+    
+    if not message:
+        return {'error': 'メッセージが指定されていません', 'response': ''}, 400
+    
+    print(f"ユーザーメッセージ: {message}")
+    print(f"過去のメッセージ数: {len(previous_messages)}件")
+    
+    # SSH接続してFastAPIのチャットエンドポイントを呼び出す
+    try:
+        # SSH接続を確立
+        ssh_client = paramiko.SSHClient()
+        ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh_client.connect(ssh_host, port=ssh_port, username=ssh_username, key_filename=ssh_key_path)
+        
+        # JSONデータを準備
+        json_data = json.dumps({
+            "message": message,
+            "previous_messages": previous_messages
+        }, ensure_ascii=False)
+        
+        # エスケープ処理を行う（特に引用符）
+        escaped_json = json_data.replace('"', '\\"')
+        
+        # FastAPIにリクエストを送るコマンド
+        command = f'curl -X POST http://127.0.0.1:8000/chat -H "Content-Type: application/json" -d "{escaped_json}"'
+        
+        print("AIサーバーにリクエスト送信中...")
+        stdin, stdout, stderr = ssh_client.exec_command(command)
+        result = stdout.read().decode('utf-8')
+        error = stderr.read().decode('utf-8')
+        
+        print("AIサーバーからの応答受信")
+        
+        if error:
+            print("エラー出力:")
+            print(error)
+        
+        # SSH接続を閉じる
+        ssh_client.close()
+        
+        try:
+            # FastAPIのレスポンスをJSONとしてパース
+            ai_response = json.loads(result)
+            
+            print("AIの回答:", ai_response.get('response', '')[:100] + "...")  # 回答の先頭部分のみ表示
+            
+            return ai_response, 200
+            
+        except json.JSONDecodeError as json_err:
+            print(f"AIサーバーからのレスポンスのJSONパースに失敗: {json_err}")
+            print(f"受信したレスポンス: {result}")
+            return {'error': 'AIレスポンスの解析に失敗しました', 'response': ''}, 500
+    
+    except Exception as e:
+        import traceback
+        print(f"AIチャット処理でエラーが発生しました: {e}")
+        print(traceback.format_exc())
+        return {'error': f'AIチャット処理に失敗しました: {str(e)}', 'response': ''}, 500
+    
+
 
 if __name__ == '__main__':
     app.debug = True
