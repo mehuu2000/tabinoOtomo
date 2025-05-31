@@ -4,8 +4,8 @@ import LuggageIcon from '@mui/icons-material/Luggage';
 import MapIcon from '@mui/icons-material/Map';
 import StickyNote2Icon from '@mui/icons-material/StickyNote2';
 import ContactPhoneOutlinedIcon from '@mui/icons-material/ContactPhoneOutlined';
-import SettingsSuggestRoundedIcon from '@mui/icons-material/SettingsSuggestRounded';
 import { useApp } from '../app/TabinoOtomo/home/appContext';
+import TryIcon from '@mui/icons-material/Try';
 // import { useRouter } from 'next/navigation'
 
 // interface SideBarProps {
@@ -72,6 +72,20 @@ export default function SideBar_c() {
                         <span className={styles.text}>メモ</span>
                     </li>
                     <li 
+                        className={getClassName('setting')}
+                        onClick={() => handleSelectChange('setting')}
+                    >
+                        <span>
+                            <TryIcon
+                                sx={{
+                                    fontSize: "1.9rem",
+                                    marginLeft: "5px",
+                                }}
+                            />
+                        </span>
+                        <span className={styles.text}>AIチャット</span>
+                    </li>
+                    <li 
                         className={getClassName('inquiry')}
                         onClick={() => handleSelectChange('inquiry')}
                     >
@@ -84,20 +98,6 @@ export default function SideBar_c() {
                             />
                         </span>
                         <span className={styles.text}>お問い合わせ</span>
-                    </li>
-                    <li 
-                        className={getClassName('setting')}
-                        onClick={() => handleSelectChange('setting')}
-                    >
-                        <span>
-                            <SettingsSuggestRoundedIcon
-                                sx={{
-                                    fontSize: "1.9rem",
-                                    marginLeft: "5px",
-                                }}
-                            />
-                        </span>
-                        <span className={styles.text}>設定</span>
                     </li>
                 </ul>
             </nav>

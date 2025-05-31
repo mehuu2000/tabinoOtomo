@@ -49,7 +49,7 @@ export default function MySearch_c() {
     const [destinations, setDestinations] = useAtom(goToAtom);
     const [when, setWhen] = useAtom(whenAtom);
     const [days, setDays] = useAtom(daysAtom);
-    const [weather, setWeather] = useAtom(weatherAtom);
+    const [weather] = useAtom(weatherAtom);
 
     // フォームバリデーション
     const formIsValid = useAtomValue(isFormValidAtom);
@@ -93,9 +93,9 @@ export default function MySearch_c() {
         }
     }
 
-    const handleWeatherChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setWeather(event.target.checked);
-    };
+    // const handleWeatherChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     setWeather(event.target.checked);
+    // };
 
     const handleNextPage = () => {
         // 現在の値を統合して保存
@@ -228,7 +228,7 @@ export default function MySearch_c() {
                         />
                     </div>
 
-                    <FormControlLabel 
+                    {/* <FormControlLabel 
                         control={
                             <Checkbox 
                                 checked={weather} 
@@ -236,7 +236,7 @@ export default function MySearch_c() {
                             />
                         } 
                         label="行き先の天気予報を調べる" 
-                    />
+                    /> */}
 
                     <button 
                         className={styles.button}
